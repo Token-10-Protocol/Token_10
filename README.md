@@ -37,6 +37,24 @@ Función IZA: Ộ Emocional. Sintoniza la frecuencia del corazón.
 
 /licencias/
 
+# Token-10 (T10) Protocol
+
+**Token-10 (T10): Un protocolo de token de coherencia basado en la L3y IZA. Transforma la confianza y cooperación en capital gobernante, haciendo que el dinero fluya hacia la coherencia colectiva.**
+
+## 📚 Documentación
+
+- **[White Paper del Token-10](./docs/WHITE_PAPER_TOKEN_10.pdf)**: La propuesta técnica completa.
+- **[Principios Fundamentales de la L3y IZA](./docs/L3Y_IZA_PRINCIPIOS_FUNDAMENTALES.md)**: La base teórica del proyecto.
+- **[Manifiesto IZA](./docs/MANIFIESTO_IZA.md)**: La visión y el espíritu del proyecto.
+
+## ⚖️ Licencia
+
+- **El núcleo conceptual (White Paper, documentación teórica)** está bajo la licencia [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International](./licencias/LICENCIA_CC_BY_NC_ND_4.0.md).
+- **El código de implementación** estará bajo la licencia [GNU Affero General Public License v3.0](./licencias/LICENCIA_AGPL_3.0.md).
+
+---
+*Un experimento de simetría económica.*
+
 LICENCIA_CC_BY_NC_ND_4.0 (para documentos)
 
 LICENCIA_AGPL_3.0 (para código futuro)
