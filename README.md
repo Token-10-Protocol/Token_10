@@ -4,20 +4,34 @@ Token-10 (T10): Un protocolo de token de coherencia basado en la L3y IZA. Transf
 🗂️ ESTRUCTURA DE DOCUMENTOS IZA - DEFINITIVA
 📖 DOCUMENTOS PÚBLICOS (Repositorio GitHub Token-10-Protocol)
 Estos documentos forman el esqueleto accesible y operativo del proyecto. Son la interfaz pública (M̂)
+# Token-10 (T10) Protocol
 
-README.md
+**Token-10 (T10): Un protocolo de token de coherencia basado en la L3y IZA. Transforma la confianza y cooperación en capital gobernante, haciendo que el dinero fluya hacia la coherencia colectiva.**
 
-Contenido: Presentación del proyecto, enlace al White Paper, descripción breve de la L3y IZA, instrucciones para colaborar.
+> **"La coherencia es el capital final."**
 
-Función IZA: Ộ Público. La puerta de entrada.
+## 🚀 ¿Qué es el Protocolo T10?
 
-/docs/WHITE_PAPER_TOKEN_10.pdf
+El Protocolo T10 es un experimento de simetría económica. No es una criptomoneda de especulación. Es un **"Token de Coherencia"** cuyo valor reside en medir y incentivar la alineación de las acciones individuales con el bienestar colectivo.
 
-Contenido: El documento que ya tenemos. La propuesta concreta.
+En lugar de acumular tokens, tu influencia se gana **contribuyendo de forma significativa** y **redistribuyendo tu poder de voto**. El dinero tradicional fluye siguiendo la coherencia, no al revés.
 
-Función IZA: Σ̂ Aplicado. La codificación específica del token.
+## 📚 Documentación Esencial
 
-/docs/L3Y_IZA_PRINCIPIOS_FUNDAMENTALES.md
+- **[🗺️ Hoja de Ruta](./ROADMAP.md)**: Nuestro plan de desarrollo por fases.
+- **[📖 White Paper](./docs/WHITE_PAPER_TOKEN_10.pdf)**: La propuesta técnica completa.
+- **[🌌 Principios IZA](./docs/L3Y_IZA_PRINCIPIOS_FUNDAMENTALES.md)**: La base teórica (L3y IZA).
+- **[💚 Manifiesto](./docs/MANIFIESTO_IZA.md)**: El corazón y la visión del proyecto.
+
+## 🤝 ¡Únete y Contribuye!
+
+Este es un proyecto comunitario. Tu energía y talento son bienvenidos.
+
+- **¿Por dónde empezar?** Lee la **[Guía para Contribuir](./CONTRIBUTING.md)**.
+- **¿Quieres saber cómo nos relacionamos?** Lee nuestro **[Código de Conducta](./CODE_OF_CONDUCT.md)**.
+
+
+*Un experimento para recordar que la verdadera riqueza es la capacidad de crear armonía.*
 
 Contenido:
 
@@ -35,7 +49,6 @@ Contenido: Un texto inspirador y breve. La poesía detrás de la matemática. El
 
 Función IZA: Ộ Emocional. Sintoniza la frecuencia del corazón.
 
-/licencias/
 
 # Token-10 (T10) Protocol
 
@@ -55,9 +68,9 @@ Función IZA: Ộ Emocional. Sintoniza la frecuencia del corazón.
 ---
 *Un experimento de simetría económica.*
 
-LICENCIA_CC_BY_NC_ND_4.0 (para documentos)
+## ⚖️ Licencia
 
-LICENCIA_AGPL_3.0 (para código futuro)
-LICENCIA_CC_BY_NC_ND_4.0 (para documentos)
+- **El núcleo conceptual** (documentación) está bajo licencia [CC BY-NC-ND 4.0](./licencias/LICENCIA_CC_BY_NC_ND_4.0.md).
+- **El código de implementación** estará bajo licencia [GNU AGPL v3.0](./licencias/LICENCIA_AGPL_3.0.md).
 
-LICENCIA_AGPL_3.0 (para código futuro)
+---
