@@ -1,1 +1,7 @@
-
+# Configuración sencilla para humanos
+sistema_decoherencia:
+  activo: true
+  metricas_a_monitorear:
+    - participacion_semanal
+    - errores_conceptuales  
+    - spin_comunitario
