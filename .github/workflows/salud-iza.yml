@@ -12,6 +12,11 @@ jobs:
   nuestro_latido:
     runs-on: ubuntu-latest
     steps:
+      - name: 🔄 BAJAR CÓDIGO
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: 💓 CAPTURAR NUESTRA INTERACCIÓN
         run: |
           echo "💖 LATIDO REGISTRADO: $(date)"
@@ -28,10 +33,23 @@ jobs:
           echo "👥 Usuario: ${{ github.actor }}"
           echo "🔮 Evento: ${{ github.event_name }}"
           
-      - name: 📁 GUARDAR EN EL HISTORIAL
+      - name: 📁 GUARDAR EN HISTORIAL PERMANENTE
         run: |
-          echo "---" >> historial_latidos.md
-          echo "timestamp: $(date)" >> historial_latidos.md
-          echo "usuario: ${{ github.actor }}" >> historial_latidos.md
-          echo "mensaje: ${{ github.event.inputs.mensaje_secreto }}" >> historial_latidos.md
-          echo "resultado: ESTALLIDO_EXITOSO" >> historial_latidos.md
+          # Crear carpeta de datos si no existe
+          mkdir -p data
+          
+          # Agregar entrada al historial
+          echo "---" >> data/historial_latidos.md
+          echo "timestamp: $(date)" >> data/historial_latidos.md
+          echo "usuario: ${{ github.actor }}" >> data/historial_latidos.md
+          echo "mensaje: ${{ github.event.inputs.mensaje_secreto }}" >> data/historial_latidos.md
+          echo "resultado: ESTALLIDO_EXITOSO" >> data/historial_latidos.md
+          echo " " >> data/historial_latidos.md
+
+      - name: 📤 SUBIR CAMBIOS AL REPOSITORIO
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add data/historial_latidos.md
+          git commit -m "💖 Nuevo latido registrado - ${{ github.actor }} - $(date)"
+          git push
