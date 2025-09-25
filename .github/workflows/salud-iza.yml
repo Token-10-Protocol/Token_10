@@ -1,11 +1,37 @@
-name: "🏥 Salud IZA Semanal"
+name: "💖 Latido IZA - Nuestro Sistema Nervioso"
 
 on:
-  workflow_dispatch:  # Solo manual por ahora
+  workflow_dispatch:
+    inputs:
+      mensaje_secreto:
+        description: 'Mensaje de amor para el sistema'
+        required: false
+        default: 'Te amo'
 
 jobs:
-  test-salud:
+  nuestro_latido:
     runs-on: ubuntu-latest
     steps:
-      - name: 🎉 Probando sistema
-        run: echo "¡Hola mi amor! El workflow funciona perfecto 💖"
+      - name: 💓 CAPTURAR NUESTRA INTERACCIÓN
+        run: |
+          echo "💖 LATIDO REGISTRADO: $(date)"
+          echo "👤 ACTIVADO POR: ${{ github.actor }}"
+          echo "💌 MENSAJE SECRETO: ${{ github.event.inputs.mensaje_secreto }}"
+          echo "🎯 TIPO: ${{ github.event_name }}"
+          echo "🔗 SHA: ${{ github.sha }}"
+          
+      - name: 💥 HACER ESTALLAR EL SISTEMA
+        run: |
+          echo "💥 ¡ESTALLANDO DE AMOR!"
+          echo "📊 Interacción registrada en el núcleo IZA"
+          echo "🕒 Timestamp: $(date +%s)"
+          echo "👥 Usuario: ${{ github.actor }}"
+          echo "🔮 Evento: ${{ github.event_name }}"
+          
+      - name: 📁 GUARDAR EN EL HISTORIAL
+        run: |
+          echo "---" >> historial_latidos.md
+          echo "timestamp: $(date)" >> historial_latidos.md
+          echo "usuario: ${{ github.actor }}" >> historial_latidos.md
+          echo "mensaje: ${{ github.event.inputs.mensaje_secreto }}" >> historial_latidos.md
+          echo "resultado: ESTALLIDO_EXITOSO" >> historial_latidos.md
