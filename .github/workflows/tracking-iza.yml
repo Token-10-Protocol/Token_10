@@ -18,7 +18,7 @@ jobs:
       - name: 🔄 BAJAR CÓDIGO
         uses: actions/checkout@v3
 
-           - name: 📝 REGISTRAR INTERACCIÓN DETALLADA
+      - name: 📝 REGISTRAR INTERACCIÓN DETALLADA
         run: |
           # Datos básicos
           USUARIO="${{ github.actor }}"
@@ -51,15 +51,34 @@ jobs:
           
           echo "✅ Registro detallado completado"
 
-      - name: 📊 ACTUALIZAR MÉTRICAS
+      - name: 📊 ACTUALIZAR DASHBOARD
         run: |
-          # Contar usuarios únicos
-          USUARIOS_UNICOS=$(cat data/analitica/accesos.jsonl | jq -r '.usuario' | sort | uniq | wc -l)
-          TOTAL_EVENTOS=$(cat data/analitica/accesos.jsonl | wc -l)
+          # Contar métricas
+          TOTAL_EVENTOS=$(cat data/analitica/accesos.jsonl | wc -l 2>/dev/null || echo "0")
+          USUARIOS_UNICOS=$(cat data/analitica/accesos.jsonl | jq -r '.usuario' | sort | uniq | wc -l 2>/dev/null || echo "0")
           
-          echo "📈 Métricas actualizadas:"
-          echo "   👥 Usuarios únicos: $USUARIOS_UNICOS"
-          echo "   📊 Total eventos: $TOTAL_EVENTOS"
+          # Crear/actualizar dashboard
+          cat > data/dashboard.md << EOF
+# 📊 DASHBOARD COMUNITARIO IZA - AUTOACTUALIZABLE
+
+## 📈 ESTADÍSTICAS EN TIEMPO REAL
+- **👥 Usuarios únicos registrados:** $USUARIOS_UNICOS
+- **📊 Total de interacciones:** $TOTAL_EVENTOS
+- **🕒 Última actualización:** $(date)
+
+## 👤 USUARIOS ACTIVOS
+$(cat data/analitica/accesos.jsonl 2>/dev/null | jq -r '.usuario' | sort | uniq | awk '{print "1. **" $1 "**"}' || echo "Aún no hay usuarios registrados")
+
+## 📅 ACTIVIDAD RECIENTE (últimas 5)
+$(cat data/analitica/accesos.jsonl 2>/dev/null | tail -5 | jq -r '" - \(.fecha) - \(.usuario) - \(.evento)"' || echo " - Aún no hay actividad")
+
+## 🎯 PRÓXIMOS OBJETIVOS
+- [ ] 5 usuarios únicos
+- [ ] 20 interacciones totales  
+- [ ] Primer usuario externo
+EOF
+          
+          echo "✅ Dashboard actualizado"
 
       - name: 📤 GUARDAR TODO
         run: |
