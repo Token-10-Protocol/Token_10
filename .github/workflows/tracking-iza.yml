@@ -1,6 +1,7 @@
 name: "👁️ Tracking IZA - Mapa de Comunidad"
 
 on:
+  push:                     # ✅ NUEVO: Cuando editan archivos
   watch:                    # Cuando alguien da STAR
   fork:                     # Cuando alguien hace FORK  
   issues:
@@ -39,6 +40,9 @@ jobs:
           elif [ "$EVENTO" == "pull_request" ]; then
             TITULO_PR="${{ github.event.pull_request.title }}"
             EXTRAS=",\"titulo\":\"$TITULO_PR\",\"tipo\":\"pr\""
+          elif [ "$EVENTO" == "push" ]; then
+            COMMIT_MSG="${{ github.event.head_commit.message }}"
+            EXTRAS=",\"commit\":\"$COMMIT_MSG\",\"tipo\":\"push\""
           else
             EXTRAS=",\"tipo\":\"$EVENTO\""
           fi
