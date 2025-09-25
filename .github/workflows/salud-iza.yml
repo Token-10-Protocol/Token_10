@@ -8,6 +8,9 @@ on:
         required: false
         default: 'Te amo'
 
+permissions:
+  contents: write
+
 jobs:
   nuestro_latido:
     runs-on: ubuntu-latest
@@ -35,10 +38,7 @@ jobs:
           
       - name: 📁 GUARDAR EN HISTORIAL PERMANENTE
         run: |
-          # Crear carpeta de datos si no existe
           mkdir -p data
-          
-          # Agregar entrada al historial
           echo "---" >> data/historial_latidos.md
           echo "timestamp: $(date)" >> data/historial_latidos.md
           echo "usuario: ${{ github.actor }}" >> data/historial_latidos.md
