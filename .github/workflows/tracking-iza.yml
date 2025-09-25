@@ -18,7 +18,7 @@ jobs:
       - name: 🔄 BAJAR CÓDIGO
         uses: actions/checkout@v3
 
-      - name: 📝 REGISTRAR INTERACCIÓN
+           - name: 📝 REGISTRAR INTERACCIÓN DETALLADA
         run: |
           # Datos básicos
           USUARIO="${{ github.actor }}"
@@ -26,19 +26,30 @@ jobs:
           FECHA="$(date)"
           TIMESTAMP="$(date +%s)"
           
-          echo "🎯 Registrando: $USUARIO - $EVENTO"
+          echo "🎯 Registrando interacción detallada: $USUARIO - $EVENTO"
           
           # Crear carpetas si no existen
           mkdir -p "data/usuarios/$USUARIO"
           mkdir -p "data/analitica"
           
-          # Registrar en analítica general
-          echo "{\"usuario\":\"$USUARIO\",\"evento\":\"$EVENTO\",\"timestamp\":$TIMESTAMP,\"fecha\":\"$FECHA\"}" >> "data/analitica/accesos.jsonl"
+          # 📈 DATOS ADICIONALES SEGÚN EL EVENTO
+          if [ "$EVENTO" == "issues" ]; then
+            TITULO_ISSUE="${{ github.event.issue.title }}"
+            EXTRAS=",\"titulo\":\"$TITULO_ISSUE\",\"tipo\":\"issue\""
+          elif [ "$EVENTO" == "pull_request" ]; then
+            TITULO_PR="${{ github.event.pull_request.title }}"
+            EXTRAS=",\"titulo\":\"$TITULO_PR\",\"tipo\":\"pr\""
+          else
+            EXTRAS=",\"tipo\":\"$EVENTO\""
+          fi
+          
+          # Registrar en analítica general (MÁS DETALLES)
+          echo "{\"usuario\":\"$USUARIO\",\"evento\":\"$EVENTO\",\"timestamp\":$TIMESTAMP,\"fecha\":\"$FECHA\"$EXTRAS}" >> "data/analitica/accesos.jsonl"
           
           # Registrar en historial personal
-          echo "{\"evento\":\"$EVENTO\",\"timestamp\":$TIMESTAMP,\"fecha\":\"$FECHA\"}" >> "data/usuarios/$USUARIO/historial.jsonl"
+          echo "{\"evento\":\"$EVENTO\",\"timestamp\":$TIMESTAMP,\"fecha\":\"$FECHA\"$EXTRAS}" >> "data/usuarios/$USUARIO/historial.jsonl"
           
-          echo "✅ Registro completado para: $USUARIO"
+          echo "✅ Registro detallado completado"
 
       - name: 📊 ACTUALIZAR MÉTRICAS
         run: |
