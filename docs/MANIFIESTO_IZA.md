@@ -1,4 +1,4 @@
-# Manifiesto IZA
+# Manifiesto IZA (V3rás k funcionará)
 
 No luchamos contra el viejo mundo.
 Plantamos semillas del nuevo.
