@@ -1,0 +1,59 @@
+name: "👁️ Tracking IZA - Mapa de Comunidad"
+
+on:
+  watch:                    # Cuando alguien da STAR
+  fork:                     # Cuando alguien hace FORK  
+  issues:
+    types: [opened, closed] # Cuando abren/cierran ISSUES
+  pull_request:
+    types: [opened, closed] # Cuando hacen PULL REQUESTS
+
+permissions:
+  contents: write
+
+jobs:
+  mapear-comunidad:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔄 BAJAR CÓDIGO
+        uses: actions/checkout@v3
+
+      - name: 📝 REGISTRAR INTERACCIÓN
+        run: |
+          # Datos básicos
+          USUARIO="${{ github.actor }}"
+          EVENTO="${{ github.event_name }}"
+          FECHA="$(date)"
+          TIMESTAMP="$(date +%s)"
+          
+          echo "🎯 Registrando: $USUARIO - $EVENTO"
+          
+          # Crear carpetas si no existen
+          mkdir -p "data/usuarios/$USUARIO"
+          mkdir -p "data/analitica"
+          
+          # Registrar en analítica general
+          echo "{\"usuario\":\"$USUARIO\",\"evento\":\"$EVENTO\",\"timestamp\":$TIMESTAMP,\"fecha\":\"$FECHA\"}" >> "data/analitica/accesos.jsonl"
+          
+          # Registrar en historial personal
+          echo "{\"evento\":\"$EVENTO\",\"timestamp\":$TIMESTAMP,\"fecha\":\"$FECHA\"}" >> "data/usuarios/$USUARIO/historial.jsonl"
+          
+          echo "✅ Registro completado para: $USUARIO"
+
+      - name: 📊 ACTUALIZAR MÉTRICAS
+        run: |
+          # Contar usuarios únicos
+          USUARIOS_UNICOS=$(cat data/analitica/accesos.jsonl | jq -r '.usuario' | sort | uniq | wc -l)
+          TOTAL_EVENTOS=$(cat data/analitica/accesos.jsonl | wc -l)
+          
+          echo "📈 Métricas actualizadas:"
+          echo "   👥 Usuarios únicos: $USUARIOS_UNICOS"
+          echo "   📊 Total eventos: $TOTAL_EVENTOS"
+
+      - name: 📤 GUARDAR TODO
+        run: |
+          git config --local user.email "tracking@iza.com"
+          git config --local user.name "IZA Tracking System"
+          git add data/
+          git commit -m "👁️ Tracking: ${{ github.actor }} - ${{ github.event_name }}"
+          git push
