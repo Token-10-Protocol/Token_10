@@ -1,0 +1,39 @@
+{
+  "version": "1.0",
+  "fecha_solicitud": "",
+  "solicitante": {
+    "github_username": "",
+    "email_contacto": "",
+    "fecha_ingreso_comunidad": "",
+    "nivel_actual_publico": "NUEVO"
+  },
+  "seccion_contribuciones": {
+    "commits_aceptados": 0,
+    "issues_resueltos": 0,
+    "discusiones_significativas": 0,
+    "documentacion_mejorada": 0,
+    "revisiones_pull_requests": 0,
+    "enlaces_evidencia": []
+  },
+  "seccion_conocimiento": {
+    "mano_cosmica": 1,
+    "tres_ciclos": 1,
+    "operadores_iza": 1,
+    "matematica_avanzada": 1,
+    "protocolos_basicos": 1,
+    "explicacion_comprension": ""
+  },
+  "seccion_compromiso": {
+    "acepta_principios_iza": false,
+    "compromiso_no_comercial": false,
+    "disponibilidad_horas_semana": 0,
+    "motivacion_participacion": "",
+    "proyectos_contribucion": ""
+  },
+  "evaluacion_automatica": {
+    "puntaje_total": 0,
+    "nivel_recomendado": "PENDIENTE",
+    "fecha_evaluacion": "",
+    "evaluador_asignado": ""
+  }
+}
