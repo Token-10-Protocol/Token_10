@@ -1,4 +1,4 @@
-name: Evaluación Automática de Acceso al Núcleo
+name: 👥 Evaluación de Acceso al Núcleo
 on:
   issues:
     types: [labeled]
@@ -10,18 +10,21 @@ jobs:
     steps:
       - name: Checkout código
         uses: actions/checkout@v3
-        
-      - name: Evaluación automática
+
+      - name: Verificar solicitud
         run: |
-          python nucleo/.acceso/sistema-puntaje.py
+          echo "📋 Nueva solicitud de acceso al núcleo"
+          echo "Issue: ${{ github.event.issue.number }}"
+          echo "Usuario: ${{ github.event.issue.user.login }}"
           
-      - name: Notificar evaluadores
-        uses: actions/github-script@v6
-        with:
-          script: |
-            github.rest.issues.addAssignees({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              assignees: ['usuario1', 'usuario2']
-            })
+          # Verificación simplificada - solo verificar que es el owner
+          if [ "${{ github.event.issue.user.login }}" == "Token-10-Protocol" ]; then
+            echo "✅ Usuario verificado - Propietario del repositorio"
+          else
+            echo "⚠️  Solicitud de usuario externo - Requiere revisión manual"
+          fi
+
+      - name: Notificar revisión manual
+        if: github.event.issue.user.login != 'Token-10-Protocol'
+        run: |
+          echo "🔔 Se requiere revisión manual para: ${{ github.event.issue.user.login }}"

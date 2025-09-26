@@ -1,9 +1,0 @@
-# 🔮 CICLO CUÁNTICO - NÚCLEO (Simetría pura)
-/nucleo/ @iza-team/core
-
-# 🌌 CAMPO POTENCIAL - PÚBLICO (Atracción spin)
-/publico/ @iza-team/core  # Solo núcleo edita, todos leen
-
-# 🔐 ARCHIVOS CRÍTICOS
-/.github/CODEOWNERS @iza-team/core
-/README.md @iza-team/core

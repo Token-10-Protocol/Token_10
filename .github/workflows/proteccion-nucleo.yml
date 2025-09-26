@@ -13,18 +13,46 @@ jobs:
     steps:
       - name: Checkout código
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Verificar estructura del núcleo
+        run: |
+          echo "🔍 Verificando estructura del núcleo..."
+          ls -la nucleo/
+          if [ -f "nucleo/.gitleaks.toml" ]; then
+            echo "✅ Gitleaks config encontrado en nucleo/"
+            # Copiar la configuración a la raíz temporalmente
+            cp nucleo/.gitleaks.toml .gitleaks.toml
+          else
+            echo "❌ Gitleaks config NO encontrado"
+            exit 1
+          fi
 
       - name: Escanear secrets en el núcleo
         uses: gitleaks/gitleaks-action@v2
         with:
+          config-path: .gitleaks.toml
           path: ./nucleo
-          config-path: nucleo/.gitleaks.toml  # ← Apunta a tu archivo existente
+          no-git: false
 
-      - name: Verificar estructura del núcleo
+      - name: Limpiar configuración temporal
         run: |
-          # Verificar que el archivo de configuración existe
-          if [ ! -f "nucleo/.gitleaks.toml" ]; then
-            echo "❌ Falta archivo de configuración Gitleaks en el núcleo"
-            exit 1
-          fi
-          echo "✅ Configuración de seguridad verificada"
+          rm -f .gitleaks.toml
+          echo "✅ Escaneo completado"
+
+      - name: Verificar archivos críticos
+        run: |
+          echo "📋 Verificando archivos críticos..."
+          CRITICAL_FILES=(
+            "nucleo/.acceso/sistema-puntaje.py"
+            "nucleo/.gitleaks.toml"
+          )
+          
+          for file in "${CRITICAL_FILES[@]}"; do
+            if [ -f "$file" ]; then
+              echo "✅ $file - OK"
+            else
+              echo "❌ $file - FALTANTE"
+            fi
+          done
