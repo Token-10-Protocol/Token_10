@@ -2,7 +2,7 @@
 
 ¡Gracias por tu interés en contribuir al Protocolo Token-10! Hay muchas formas de ayudar, independientemente de tus habilidades.
 
-## 🤔 ¿Por dónde empezar?
+## 🤔 ¿Por dónde empezar?  Mhh!
 
 1.  **Lee el [Manifiesto IZA](./docs/MANIFIESTO_IZA.md) y los [Principios Fundamentales](./docs/L3Y_IZA_PRINCIPIOS_FUNDAMENTALES.md).** ¿Resuenan contigo?
 2.  **Explora la [Hoja de Ruta](./ROADMAP.md).** ¿Hay alguna fase que te intrigue especialmente?
