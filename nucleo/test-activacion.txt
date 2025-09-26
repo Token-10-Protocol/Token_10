@@ -1,0 +1,2 @@
+# TEST: Activando protección del núcleo
+# TEST: Activando protección del núcleo
