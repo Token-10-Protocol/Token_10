@@ -1,6 +1,6 @@
 # L3y IZA: Principios Fundamentales
 
-Este documento es una introducción a los principios básicos de la Teoría IZA, el marco conceptual detrás del Protocolo Token-10.
+Este documento es una introducción a los principios básicos de la Teoría IZA, el marco conceptual detrás del Protocolo Token-10.  Primer Extensor cuantiko. Sép, y ya gatea. jjajjajjaja
 
 ## Los 3 Ciclos de la Realidad
 
