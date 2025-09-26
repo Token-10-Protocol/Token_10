@@ -40,3 +40,4 @@ main
 {"usuario":"Token-10-Protocol","evento":"push","accion":"N/A","timestamp":1758921119,"fecha":"Fri Sep 26 21:11:59 UTC 2025","tipo":"push","commit":"Update README.md","modificacion":true}
 main
 {"usuario":"Token-10-Protocol","evento":"push","accion":"N/A","timestamp":1758923681,"fecha":"Fri Sep 26 21:54:41 UTC 2025","tipo":"push","commit":"Merge branch 'main' into prueba-proteccion-nucleo","modificacion":true}
+{"usuario":"Token-10-Protocol","evento":"pull_request","accion":"closed","timestamp":1758923713,"fecha":"Fri Sep 26 21:55:13 UTC 2025","tipo":"pr","titulo":"👁️ Tracking: Token-10-Protocol - push (N/A)","estado":"closed","accion":"closed","modificacion":true}
