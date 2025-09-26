@@ -40,11 +40,9 @@ jobs:
 
           echo "🎯 Registrando modificación: $USUARIO - $EVENTO ($ACCION)"
 
-          # Crear directorios si no existen
           mkdir -p "data/usuarios/$USUARIO"
           mkdir -p "data/analitica"
 
-          # Determinar tipo de interacción y datos adicionales
           case "$EVENTO" in
             "push")
               COMMIT_MSG="${{ github.event.head_commit.message || 'Sin mensaje' }}"
@@ -80,28 +78,19 @@ jobs:
               ;;
           esac
 
-          # Registrar en archivo principal
           echo "{\"usuario\":\"$USUARIO\",\"evento\":\"$EVENTO\",\"accion\":\"$ACCION\",\"timestamp\":$TIMESTAMP,\"fecha\":\"$FECHA\"$EXTRAS}" >> "data/analitica/accesos.jsonl"
-
-          # Registrar en historial del usuario
           echo "{\"evento\":\"$EVENTO\",\"accion\":\"$ACCION\",\"timestamp\":$TIMESTAMP,\"fecha\":\"$FECHA\"$EXTRAS}" >> "data/usuarios/$USUARIO/historial.jsonl"
 
           echo "✅ Registro de modificación completado"
           
       - name: 📊 GENERAR ESTADÍSTICAS AVANZADAS
         run: |
-          # Estadísticas generales
           if [ -f "data/analitica/accesos.jsonl" ]; then
             TOTAL_EVENTOS=$(wc -l < data/analitica/accesos.jsonl)
             USUARIOS_UNICOS=$(jq -r '.usuario' data/analitica/accesos.jsonl | sort | uniq | wc -l)
-            
-            # Eventos de modificación
             MODIFICACIONES=$(jq 'select(.modificacion == true)' data/analitica/accesos.jsonl | wc -l)
             
-            # Tipos de eventos más comunes
             jq -r '.evento' data/analitica/accesos.jsonl | sort | uniq -c | sort -nr > data/analitica/top_eventos.txt
-            
-            # Usuarios más activos
             jq -r '.usuario' data/analitica/accesos.jsonl | sort | uniq -c | sort -nr > data/analitica/top_usuarios.txt
             
           else
@@ -117,53 +106,58 @@ jobs:
           
       - name: 📈 ACTUALIZAR DASHBOARD INTERACTIVO
         run: |
+          # Configurar variables
+          TOTAL_EVENTOS=0
+          USUARIOS_UNICOS=0
+          MODIFICACIONES=0
+          FECHA_ACTUAL=$(date)
+
           if [ -f "data/analitica/accesos.jsonl" ]; then
             TOTAL_EVENTOS=$(wc -l < data/analitica/accesos.jsonl)
             USUARIOS_UNICOS=$(jq -r '.usuario' data/analitica/accesos.jsonl | sort | uniq | wc -l)
             MODIFICACIONES=$(jq 'select(.modificacion == true)' data/analitica/accesos.jsonl | wc -l)
-            
-            # Últimos 5 eventos
-            ULTIMOS_EVENTOS=$(tail -5 data/analitica/accesos.jsonl | jq -r '[.fecha, .usuario, .evento, .accion] | @tsv' | sed 's/\t/ | /g')
-          else
-            TOTAL_EVENTOS=0
-            USUARIOS_UNICOS=0
-            MODIFICACIONES=0
-            ULTIMOS_EVENTOS="No hay eventos registrados"
           fi
 
-          # Crear dashboard detallado
-          cat > data/dashboard.md << EOF
-# 📊 DASHBOARD IZA - MAPA DE COMUNIDAD
+          # Crear dashboard de forma simple y directa
+          echo "# 📊 DASHBOARD IZA - MAPA DE COMUNIDAD" > data/dashboard.md
+          echo "" >> data/dashboard.md
+          echo "## 📈 ESTADÍSTICAS PRINCIPALES" >> data/dashboard.md
+          echo "" >> data/dashboard.md
+          echo "- **👥 Usuarios únicos:** $USUARIOS_UNICOS" >> data/dashboard.md
+          echo "- **📊 Total interacciones:** $TOTAL_EVENTOS" >> data/dashboard.md
+          echo "- **✏️ Modificaciones registradas:** $MODIFICACIONES" >> data/dashboard.md
+          echo "- **📅 Última actualización:** $FECHA_ACTUAL" >> data/dashboard.md
+          echo "" >> data/dashboard.md
+          echo "## 🎯 OBJETIVOS DE COMUNIDAD" >> data/dashboard.md
+          echo "" >> data/dashboard.md
+          echo "- [ ] 5 usuarios únicos" >> data/dashboard.md
+          echo "- [ ] 20 interacciones totales" >> data/dashboard.md
+          echo "- [ ] 15 modificaciones registradas" >> data/dashboard.md
+          echo "" >> data/dashboard.md
+          echo "## 🔄 ACTIVIDAD RECIENTE" >> data/dashboard.md
+          echo "" >> data/dashboard.md
 
-## 📈 ESTADÍSTICAS PRINCIPALES
+          # Agregar tabla de últimos eventos si existen
+          if [ -f "data/analitica/accesos.jsonl" ] && [ $TOTAL_EVENTOS -gt 0 ]; then
+            echo "| Fecha | Usuario | Evento | Acción |" >> data/dashboard.md
+            echo "|-------|---------|--------|---------|" >> data/dashboard.md
+            tail -5 data/analitica/accesos.jsonl | jq -r '[.fecha, .usuario, .evento, .accion] | @tsv' | while IFS=$'\t' read -r fecha usuario evento accion; do
+              echo "| $fecha | $usuario | $evento | $accion |" >> data/dashboard.md
+            done
+          else
+            echo "No hay eventos registrados" >> data/dashboard.md
+          fi
 
-- **👥 Usuarios únicos:** $USUARIOS_UNICOS
-- **📊 Total interacciones:** $TOTAL_EVENTOS  
-- **✏️ Modificaciones registradas:** $MODIFICACIONES
-- **📅 Última actualización:** $(date)
-
-## 🎯 OBJETIVOS DE COMUNIDAD
-
-- [ ] 5 usuarios únicos
-- [ ] 20 interacciones totales
-- [ ] 15 modificaciones registradas
-
-## 🔄 ACTIVIDAD RECIENTE
-
-| Fecha | Usuario | Evento | Acción |
-|-------|---------|--------|---------|
-$ULTIMOS_EVENTOS
-
-## 📋 TIPOS DE INTERACCIÓN REGISTRADOS
-
-- ✅ **Push:** Commits al repositorio
-- ✅ **Issues:** Apertura, cierre, edición
-- ✅ **Pull Requests:** Creación, revisión, merge
-- ✅ **Comentarios:** En issues y PRs
-- ✅ **Reviews:** Revisiones de código
-
-> *Sistema optimizado para registrar modificaciones reales*
-EOF
+          echo "" >> data/dashboard.md
+          echo "## 📋 TIPOS DE INTERACCIÓN REGISTRADOS" >> data/dashboard.md
+          echo "" >> data/dashboard.md
+          echo "- ✅ **Push:** Commits al repositorio" >> data/dashboard.md
+          echo "- ✅ **Issues:** Apertura, cierre, edición" >> data/dashboard.md
+          echo "- ✅ **Pull Requests:** Creación, revisión, merge" >> data/dashboard.md
+          echo "- ✅ **Comentarios:** En issues y PRs" >> data/dashboard.md
+          echo "- ✅ **Reviews:** Revisiones de código" >> data/dashboard.md
+          echo "" >> data/dashboard.md
+          echo "> *Sistema optimizado para registrar modificaciones reales*" >> data/dashboard.md
 
           echo "✅ Dashboard actualizado con estadísticas avanzadas"
           
@@ -171,10 +165,8 @@ EOF
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          
           git add data/
           
-          # Verificar si hay cambios
           if git diff --staged --quiet; then
             echo "⚠️ No hay cambios para commitear"
           else
