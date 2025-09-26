@@ -1,0 +1,25 @@
+# Configuración de protección de ramas para el núcleo
+
+protected_branches:
+  main:
+    required_status_checks:
+      strict: true
+      contexts:
+        - "nucleo-access-check"
+        - "security-scan"
+    required_pull_request_reviews:
+      required_approving_review_count: 2
+      require_code_owner_reviews: true
+      dismiss_stale_reviews: true
+    restrictions:
+      users: ["usuario-principal", "colaborador1", "colaborador2"]
+      teams: ["iza-nucleo-team"]
+    enforce_admins: false
+    require_linear_history: true
+    allow_force_pushes: false
+    allow_deletions: false
+
+  develop:
+    required_pull_request_reviews:
+      required_approving_review_count: 1
+      require_code_owner_reviews: true
