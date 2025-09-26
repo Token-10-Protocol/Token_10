@@ -19,7 +19,7 @@ jobs:
       - name: 🔄 BAJAR CÓDIGO
         uses: actions/checkout@v3
 
-      - name: 📝 REGISTRAR INTERACCIÓN DETALLADA
+           - name: 📝 REGISTRAR INTERACCIÓN DETALLADA
         run: |
           # Datos básicos
           USUARIO="${{ github.actor }}"
@@ -33,7 +33,7 @@ jobs:
           mkdir -p "data/usuarios/$USUARIO"
           mkdir -p "data/analitica"
           
-          # 📈 DATOS ADICIONALES SEGÚN EL EVENTO
+          # 📈 DATOS ADICIONALES SEGÚN EL EVENTO (VERSIÓN SEGURA)
           if [ "$EVENTO" == "issues" ]; then
             TITULO_ISSUE="${{ github.event.issue.title }}"
             EXTRAS=",\"titulo\":\"$TITULO_ISSUE\",\"tipo\":\"issue\""
@@ -41,8 +41,11 @@ jobs:
             TITULO_PR="${{ github.event.pull_request.title }}"
             EXTRAS=",\"titulo\":\"$TITULO_PR\",\"tipo\":\"pr\""
           elif [ "$EVENTO" == "push" ]; then
-            COMMIT_MSG="${{ github.event.head_commit.message }}"
-            EXTRAS=",\"commit\":\"$COMMIT_MSG\",\"tipo\":\"push\""
+            # VERSIÓN SEGURA - maneja commit message vacío
+            COMMIT_MSG="${{ github.event.head_commit.message || 'Sin mensaje' }}"
+            # Escapar comillas dobles para JSON
+            COMMIT_MSG_ESCAPED=$(echo "$COMMIT_MSG" | sed 's/"/\\"/g')
+            EXTRAS=",\"commit\":\"$COMMIT_MSG_ESCAPED\",\"tipo\":\"push\""
           else
             EXTRAS=",\"tipo\":\"$EVENTO\""
           fi
