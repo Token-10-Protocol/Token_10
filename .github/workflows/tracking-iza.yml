@@ -1,7 +1,7 @@
 name: "👁️ Tracking IZA - Mapa de Comunidad"
 
 on:
-  push:                     # ✅ NUEVO: Cuando editan archivos
+  push:                     # Cuando editan archivos
   watch:                    # Cuando alguien da STAR
   fork:                     # Cuando alguien hace FORK  
   issues:
@@ -19,7 +19,12 @@ jobs:
       - name: 🔄 BAJAR CÓDIGO
         uses: actions/checkout@v3
 
-           - name: 📝 REGISTRAR INTERACCIÓN DETALLADA
+      - name: 🔧 INSTALAR HERRAMIENTAS
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      - name: 📝 REGISTRAR INTERACCIÓN DETALLADA
         run: |
           # Datos básicos
           USUARIO="${{ github.actor }}"
@@ -50,7 +55,7 @@ jobs:
             EXTRAS=",\"tipo\":\"$EVENTO\""
           fi
           
-          # Registrar en analítica general (MÁS DETALLES)
+          # Registrar en analítica general
           echo "{\"usuario\":\"$USUARIO\",\"evento\":\"$EVENTO\",\"timestamp\":$TIMESTAMP,\"fecha\":\"$FECHA\"$EXTRAS}" >> "data/analitica/accesos.jsonl"
           
           # Registrar en historial personal
@@ -60,9 +65,18 @@ jobs:
 
       - name: 📊 ACTUALIZAR DASHBOARD
         run: |
-          # Contar métricas
-          TOTAL_EVENTOS=$(cat data/analitica/accesos.jsonl | wc -l 2>/dev/null || echo "0")
-          USUARIOS_UNICOS=$(cat data/analitica/accesos.jsonl | jq -r '.usuario' | sort | uniq | wc -l 2>/dev/null || echo "0")
+          # Contar métricas (con manejo de errores)
+          if [ -f "data/analitica/accesos.jsonl" ]; then
+            TOTAL_EVENTOS=$(cat data/analitica/accesos.jsonl | wc -l)
+            USUARIOS_UNICOS=$(cat data/analitica/accesos.jsonl | jq -r '.usuario' | sort | uniq | wc -l)
+            LISTA_USUARIOS=$(cat data/analitica/accesos.jsonl | jq -r '.usuario' | sort | uniq | awk '{print "1. **" $1 "**"}' | head -5)
+            ACTIVIDAD_RECIENTE=$(cat data/analitica/accesos.jsonl | tail -5 | jq -r '" - \(.fecha) - \(.usuario) - \(.evento)"')
+          else
+            TOTAL_EVENTOS=0
+            USUARIOS_UNICOS=0
+            LISTA_USUARIOS="Aún no hay usuarios registrados"
+            ACTIVIDAD_RECIENTE=" - Aún no hay actividad"
+          fi
           
           # Crear/actualizar dashboard
           cat > data/dashboard.md << EOF
@@ -74,10 +88,10 @@ jobs:
 - **🕒 Última actualización:** $(date)
 
 ## 👤 USUARIOS ACTIVOS
-$(cat data/analitica/accesos.jsonl 2>/dev/null | jq -r '.usuario' | sort | uniq | awk '{print "1. **" $1 "**"}' || echo "Aún no hay usuarios registrados")
+$LISTA_USUARIOS
 
 ## 📅 ACTIVIDAD RECIENTE (últimas 5)
-$(cat data/analitica/accesos.jsonl 2>/dev/null | tail -5 | jq -r '" - \(.fecha) - \(.usuario) - \(.evento)"' || echo " - Aún no hay actividad")
+$ACTIVIDAD_RECIENTE
 
 ## 🎯 PRÓXIMOS OBJETIVOS
 - [ ] 5 usuarios únicos
@@ -89,8 +103,8 @@ EOF
 
       - name: 📤 GUARDAR TODO
         run: |
-          git config --local user.email "tracking@iza.com"
-          git config --local user.name "IZA Tracking System"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git add data/
-          git commit -m "👁️ Tracking: ${{ github.actor }} - ${{ github.event_name }}"
-          git push
+          git commit -m "👁️ Tracking: ${{ github.actor }} - ${{ github.event_name }}" || echo "✅ No hay cambios que commitear"
+          git push || echo "✅ No hay cambios que pushear"
