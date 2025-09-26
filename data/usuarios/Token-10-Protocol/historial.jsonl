@@ -22,3 +22,4 @@ Con_Ciencia","modificacion":true}
 {"evento":"push","accion":"N/A","timestamp":1758852867,"fecha":"Fri Sep 26 02:14:27 UTC 2025","tipo":"push","commit":"Create evaluacion-acceso.yml","modificacion":true}
 {"evento":"push","accion":"N/A","timestamp":1758853816,"fecha":"Fri Sep 26 02:30:16 UTC 2025","tipo":"push","commit":"Create CODEOWNERS","modificacion":true}
 {"evento":"push","accion":"N/A","timestamp":1758856541,"fecha":"Fri Sep 26 03:15:41 UTC 2025","tipo":"push","commit":"Create branch-protection.yml","modificacion":true}
+{"evento":"push","accion":"N/A","timestamp":1758856592,"fecha":"Fri Sep 26 03:16:32 UTC 2025","tipo":"push","commit":"Create proteccion-nucleo.yml","modificacion":true}
