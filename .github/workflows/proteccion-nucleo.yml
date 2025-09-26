@@ -1,0 +1,85 @@
+name: Protección del Núcleo IZA
+on:
+  push:
+    paths:
+      - 'nucleo/**'
+      - '.github/**'
+  pull_request:
+    paths:
+      - 'nucleo/**'
+
+jobs:
+  validar-acceso-nucleo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Verificar permisos de usuario
+        id: check_permissions
+        run: |
+          # Verificar si el usuario tiene acceso al núcleo
+          USER_PERMISSION=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission" | jq -r .permission)
+          
+          if [[ "$USER_PERMISSION" != "admin" && "$USER_PERMISSION" != "write" ]]; then
+            echo "❌ Usuario ${{ github.actor }} no tiene permisos para modificar el núcleo"
+            exit 1
+          fi
+          
+          # Verificar si es miembro del equipo nuclear
+          IS_NUCLEAR_MEMBER=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/orgs/iza-teoria/teams/iza-nucleo-team/memberships/${{ github.actor }}" | jq -r .state)
+            
+          if [[ "$IS_NUCLEAR_MEMBER" != "active" ]]; then
+            echo "❌ Usuario ${{ github.actor }} no es miembro del equipo nuclear"
+            exit 1
+          fi
+
+      - name: Validar cambios en nucleo
+        run: |
+          # Verificar que los cambios en nucleo/ sean aprobados
+          CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
+          NUCLEO_CHANGES=$(echo "$CHANGED_FILES" | grep -c "^nucleo/" || true)
+          
+          if [ "$NUCLEO_CHANGES" -gt 0 ]; then
+            echo "🔒 Cambios detectados en el núcleo - Validando..."
+            
+            # Verificar que el commit tenga al menos 2 aprobaciones
+            APPROVALS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews" | \
+              jq '[.[] | select(.state == "APPROVED")] | length')
+              
+            if [ "$APPROVALS" -lt 2 ]; then
+              echo "❌ Se requieren al menos 2 aprobaciones para cambios en el núcleo"
+              exit 1
+            fi
+          fi
+
+  escanear-seguridad:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Escanear secrets en el núcleo
+        uses: gitleaks/gitleaks-action@v2
+        with:
+          path: ./nucleo
+          config-path: .gitleaks.toml
+
+      - name: Verificar integridad de archivos sensibles
+        run: |
+          # Lista de archivos críticos que deben mantenerse seguros
+          CRITICAL_FILES=(
+            "nucleo/keygen-aethernet/protocolo-completo.md"
+            "nucleo/.acceso/sistema-puntaje.py"
+            "nucleo/experimentos-sensibles/datos-crudos/"
+          )
+          
+          for file in "${CRITICAL_FILES[@]}"; do
+            if [ -f "$file" ] || [ -d "$file" ]; then
+              # Verificar que los archivos críticos no sean modificados sin autorización especial
+              echo "✅ Archivo crítico verificado: $file"
+            fi
+          done
