@@ -1,8 +1,7 @@
+# Editar el workflow corregido
+cat > .github/workflows/proteccion-nucleo.yml << 'EOF'
 name: 🔒 Protección del Núcleo Token 10
 on:
-  push:
-    paths:
-      - 'nucleo/**'
   pull_request:
     paths:
       - 'nucleo/**'
@@ -21,9 +20,7 @@ jobs:
           echo "🔍 Verificando estructura del núcleo..."
           ls -la nucleo/
           if [ -f "nucleo/.gitleaks.toml" ]; then
-            echo "✅ Gitleaks config encontrado en nucleo/"
-            # Copiar la configuración a la raíz temporalmente
-            cp nucleo/.gitleaks.toml .gitleaks.toml
+            echo "✅ Gitleaks config encontrado"
           else
             echo "❌ Gitleaks config NO encontrado"
             exit 1
@@ -32,14 +29,9 @@ jobs:
       - name: Escanear secrets en el núcleo
         uses: gitleaks/gitleaks-action@v2
         with:
-          config-path: .gitleaks.toml
+          config-path: nucleo/.gitleaks.toml  # RUTA CORREGIDA
           path: ./nucleo
           no-git: false
-
-      - name: Limpiar configuración temporal
-        run: |
-          rm -f .gitleaks.toml
-          echo "✅ Escaneo completado"
 
       - name: Verificar archivos críticos
         run: |
@@ -56,3 +48,5 @@ jobs:
               echo "❌ $file - FALTANTE"
             fi
           done
+          echo "✅ Protección del núcleo verificada"
+EOF
