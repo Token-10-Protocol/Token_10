@@ -1,5 +1,5 @@
 # Código de Conducta
-
+Respeto por la propiedad privada (las opinionenes para llegar a las ideas)
 ## Nuestro Compromiso
 
 Nosotros, como miembros, contribuyentes y líderes de este proyecto, nos comprometemos a hacer de la participación en nuestra comunidad una experiencia libre de acoso para todos, independientemente de su identidad.
