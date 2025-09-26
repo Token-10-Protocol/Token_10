@@ -1,13 +1,13 @@
 name: "👁️ Tracking IZA - Mapa de Comunidad"
 
 on:
-  push:                     # Cuando editan archivos
-  watch:                    # Cuando alguien da STAR
-  fork:                     # Cuando alguien hace FORK  
+  push:
+  watch:
+  fork:
   issues:
-    types: [opened, closed] # Cuando abren/cierran ISSUES
+    types: [opened, closed]
   pull_request:
-    types: [opened, closed] # Cuando hacen PULL REQUESTS
+    types: [opened, closed]
 
 permissions:
   contents: write
@@ -26,19 +26,16 @@ jobs:
 
       - name: 📝 REGISTRAR INTERACCIÓN DETALLADA
         run: |
-          # Datos básicos
           USUARIO="${{ github.actor }}"
           EVENTO="${{ github.event_name }}"
           FECHA="$(date)"
           TIMESTAMP="$(date +%s)"
           
-          echo "🎯 Registrando interacción detallada: $USUARIO - $EVENTO"
+          echo "🎯 Registrando: $USUARIO - $EVENTO"
           
-          # Crear carpetas si no existen
           mkdir -p "data/usuarios/$USUARIO"
           mkdir -p "data/analitica"
           
-          # 📈 DATOS ADICIONALES SEGÚN EL EVENTO (VERSIÓN SEGURA)
           if [ "$EVENTO" == "issues" ]; then
             TITULO_ISSUE="${{ github.event.issue.title }}"
             EXTRAS=",\"titulo\":\"$TITULO_ISSUE\",\"tipo\":\"issue\""
@@ -46,65 +43,46 @@ jobs:
             TITULO_PR="${{ github.event.pull_request.title }}"
             EXTRAS=",\"titulo\":\"$TITULO_PR\",\"tipo\":\"pr\""
           elif [ "$EVENTO" == "push" ]; then
-            # VERSIÓN SEGURA - maneja commit message vacío
             COMMIT_MSG="${{ github.event.head_commit.message || 'Sin mensaje' }}"
-            # Escapar comillas dobles para JSON
             COMMIT_MSG_ESCAPED=$(echo "$COMMIT_MSG" | sed 's/"/\\"/g')
             EXTRAS=",\"commit\":\"$COMMIT_MSG_ESCAPED\",\"tipo\":\"push\""
           else
             EXTRAS=",\"tipo\":\"$EVENTO\""
           fi
           
-          # Registrar en analítica general
           echo "{\"usuario\":\"$USUARIO\",\"evento\":\"$EVENTO\",\"timestamp\":$TIMESTAMP,\"fecha\":\"$FECHA\"$EXTRAS}" >> "data/analitica/accesos.jsonl"
-          
-          # Registrar en historial personal
           echo "{\"evento\":\"$EVENTO\",\"timestamp\":$TIMESTAMP,\"fecha\":\"$FECHA\"$EXTRAS}" >> "data/usuarios/$USUARIO/historial.jsonl"
           
-          echo "✅ Registro detallado completado"
+          echo "✅ Registro completado"
 
       - name: 📊 ACTUALIZAR DASHBOARD
         run: |
-          # Contar métricas (con manejo de errores)
           if [ -f "data/analitica/accesos.jsonl" ]; then
             TOTAL_EVENTOS=$(cat data/analitica/accesos.jsonl | wc -l)
             USUARIOS_UNICOS=$(cat data/analitica/accesos.jsonl | jq -r '.usuario' | sort | uniq | wc -l)
-            LISTA_USUARIOS=$(cat data/analitica/accesos.jsonl | jq -r '.usuario' | sort | uniq | awk '{print "1. **" $1 "**"}' | head -5)
-            ACTIVIDAD_RECIENTE=$(cat data/analitica/accesos.jsonl | tail -5 | jq -r '" - \(.fecha) - \(.usuario) - \(.evento)"')
           else
             TOTAL_EVENTOS=0
             USUARIOS_UNICOS=0
-            LISTA_USUARIOS="Aún no hay usuarios registrados"
-            ACTIVIDAD_RECIENTE=" - Aún no hay actividad"
           fi
           
-          # Crear/actualizar dashboard
-          cat > data/dashboard.md << EOF
-# 📊 DASHBOARD COMUNITARIO IZA - AUTOACTUALIZABLE
-
-## 📈 ESTADÍSTICAS EN TIEMPO REAL
-- **👥 Usuarios únicos registrados:** $USUARIOS_UNICOS
-- **📊 Total de interacciones:** $TOTAL_EVENTOS
-- **🕒 Última actualización:** $(date)
-
-## 👤 USUARIOS ACTIVOS
-$LISTA_USUARIOS
-
-## 📅 ACTIVIDAD RECIENTE (últimas 5)
-$ACTIVIDAD_RECIENTE
-
-## 🎯 PRÓXIMOS OBJETIVOS
-- [ ] 5 usuarios únicos
-- [ ] 20 interacciones totales  
-- [ ] Primer usuario externo
-EOF
+          # Crear dashboard simple
+          echo "# 📊 DASHBOARD IZA" > data/dashboard.md
+          echo "" >> data/dashboard.md
+          echo "## 📈 ESTADÍSTICAS" >> data/dashboard.md
+          echo "- **👥 Usuarios únicos:** $USUARIOS_UNICOS" >> data/dashboard.md
+          echo "- **📊 Total interacciones:** $TOTAL_EVENTOS" >> data/dashboard.md
+          echo "- **🕒 Actualización:** $(date)" >> data/dashboard.md
+          echo "" >> data/dashboard.md
+          echo "## 🎯 OBJETIVOS" >> data/dashboard.md
+          echo "- [ ] 5 usuarios únicos" >> data/dashboard.md
+          echo "- [ ] 20 interacciones" >> data/dashboard.md
           
           echo "✅ Dashboard actualizado"
 
       - name: 📤 GUARDAR TODO
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
           git add data/
-          git commit -m "👁️ Tracking: ${{ github.actor }} - ${{ github.event_name }}" || echo "✅ No hay cambios que commitear"
-          git push || echo "✅ No hay cambios que pushear"
+          git commit -m "👁️ Tracking: ${{ github.actor }} - ${{ github.event_name }}" || exit 0
+          git push || exit 0
