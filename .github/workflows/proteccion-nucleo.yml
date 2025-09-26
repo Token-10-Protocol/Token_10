@@ -1,49 +1,31 @@
 name: 🔒 Protección del Núcleo Token 10
+
 on:
+  push:
+    paths:
+      - 'nucleo/**'
   pull_request:
     paths:
       - 'nucleo/**'
 
+permissions:
+  contents: read
+  pull-requests: read
+  actions: read
+  security-events: write
+
 jobs:
-  escanear-seguridad:
+  escanear-nucleo:
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Checkout código
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+    - name: Checkout código
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
-      - name: Verificar estructura del núcleo
-        run: |
-          echo "🔍 Verificando estructura del núcleo..."
-          ls -la nucleo/
-          if [ -f "nucleo/.gitleaks.toml" ]; then
-            echo "✅ Gitleaks config encontrado"
-          else
-            echo "❌ Gitleaks config NO encontrado"
-            exit 1
-          fi
-
-      - name: Escanear secrets en el núcleo
-        uses: gitleaks/gitleaks-action@v2
-        with:
-          config-path: nucleo/.gitleaks.toml
-          path: ./nucleo
-          no-git: false
-
-      - name: Verificar archivos críticos
-        run: |
-          echo "📋 Verificando archivos críticos..."
-          CRITICAL_FILES=(
-            "nucleo/.acceso/sistema-puntaje.py"
-            "nucleo/.gitleaks.toml"
-          )
-          
-          for file in "${CRITICAL_FILES[@]}"; do
-            if [ -f "$file" ]; then
-              echo "✅ $file - OK"
-            else
-              echo "❌ $file - FALTANTE"
-            fi
-          done
-          echo "✅ Protección del núcleo verificada"
+    - name: Ejecutar Gitleaks
+      uses: gitleaks/gitleaks-action@v2
+      with:
+        config-path: nucleo/.gitleaks.toml
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
