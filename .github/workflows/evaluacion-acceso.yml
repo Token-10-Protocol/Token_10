@@ -1,0 +1,27 @@
+name: Evaluación Automática de Acceso al Núcleo
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  evaluar-solicitud:
+    if: contains(github.event.issue.labels.*.name, 'solicitud-nucleo')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+        
+      - name: Evaluación automática
+        run: |
+          python nucleo/.acceso/sistema-puntaje.py
+          
+      - name: Notificar evaluadores
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.addAssignees({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              assignees: ['usuario1', 'usuario2']
+            })
