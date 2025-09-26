@@ -1,0 +1,42 @@
+# PROPIETARIOS DEL CÓDIGO IZA
+# Los @mentions serán notificados automáticamente de cambios
+
+# ==============================================================================
+# ZONA NUCLEO - ACCESO RESTRINGIDO
+# ==============================================================================
+
+# Núcleo completo - requiere aprobación del propietario
+/nucleo/                 @Token-10-Protocol
+
+# Subcarpetas específicas del núcleo
+/nucleo/.acceso/         @Token-10-Protocol
+/nucleo/keygen-aethernet/ @Token-10-Protocol
+/nucleo/experimentos-sensibles/ @Token-10-Protocol
+/nucleo/tracking-interacciones/ @Token-10-Protocol
+/nucleo/protocolos-avanzados/ @Token-10-Protocol
+
+# ==============================================================================
+# CONFIGURACIÓN DEL SISTEMA
+# ==============================================================================
+
+# Configuración de GitHub y workflows
+/.github/                @Token-10-Protocol
+/.github/workflows/      @Token-10-Protocol
+
+# ==============================================================================
+# ARCHIVOS CRÍTICOS DE CONFIGURACIÓN
+# ==============================================================================
+
+# Archivos raíz críticos
+.gitignore               @Token-10-Protocol
+README.md                @Token-10-Protocol
+LICENSE                  @Token-10-Protocol
+package.json             @Token-10-Protocol
+
+# ==============================================================================
+# SECURITY - ARCHIVOS DE SEGURIDAD
+# ==============================================================================
+
+.gitleaks.toml           @Token-10-Protocol
+.github/CODEOWNERS       @Token-10-Protocol
+.github/SECURITY.md      @Token-10-Protocol
