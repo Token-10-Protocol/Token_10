@@ -1,13 +1,19 @@
-name: "👁️ Tracking IZA - Mapa de Comunidad"
+name: 👁️ Tracking IZA - Mapa de Comunidad Optimizado
 
 on:
-  push:
-  watch:
-  fork:
+  push: null
+  watch: null
+  fork: null
   issues:
-    types: [opened, closed]
+    types: [opened, closed, edited, reopened]
   pull_request:
-    types: [opened, closed]
+    types: [opened, closed, edited, reopened, review_requested]
+  issue_comment:
+    types: [created, edited, deleted]
+  pull_request_review:
+    types: [submitted, edited, dismissed]
+  pull_request_review_comment:
+    types: [created, edited, deleted]
 
 permissions:
   contents: write
@@ -18,71 +24,161 @@ jobs:
     steps:
       - name: 🔄 BAJAR CÓDIGO
         uses: actions/checkout@v3
-
+        
       - name: 🔧 INSTALAR HERRAMIENTAS
         run: |
           sudo apt-get update
           sudo apt-get install -y jq
-
-      - name: 📝 REGISTRAR INTERACCIÓN DETALLADA
+          
+      - name: 📝 REGISTRAR INTERACCIÓN DE MODIFICACIÓN
         run: |
           USUARIO="${{ github.actor }}"
           EVENTO="${{ github.event_name }}"
           FECHA="$(date)"
           TIMESTAMP="$(date +%s)"
-          
-          echo "🎯 Registrando: $USUARIO - $EVENTO"
-          
+          ACCION="${{ github.event.action || 'N/A' }}"
+
+          echo "🎯 Registrando modificación: $USUARIO - $EVENTO ($ACCION)"
+
+          # Crear directorios si no existen
           mkdir -p "data/usuarios/$USUARIO"
           mkdir -p "data/analitica"
-          
-          if [ "$EVENTO" == "issues" ]; then
-            TITULO_ISSUE="${{ github.event.issue.title }}"
-            EXTRAS=",\"titulo\":\"$TITULO_ISSUE\",\"tipo\":\"issue\""
-          elif [ "$EVENTO" == "pull_request" ]; then
-            TITULO_PR="${{ github.event.pull_request.title }}"
-            EXTRAS=",\"titulo\":\"$TITULO_PR\",\"tipo\":\"pr\""
-          elif [ "$EVENTO" == "push" ]; then
-            COMMIT_MSG="${{ github.event.head_commit.message || 'Sin mensaje' }}"
-            COMMIT_MSG_ESCAPED=$(echo "$COMMIT_MSG" | sed 's/"/\\"/g')
-            EXTRAS=",\"commit\":\"$COMMIT_MSG_ESCAPED\",\"tipo\":\"push\""
-          else
-            EXTRAS=",\"tipo\":\"$EVENTO\""
-          fi
-          
-          echo "{\"usuario\":\"$USUARIO\",\"evento\":\"$EVENTO\",\"timestamp\":$TIMESTAMP,\"fecha\":\"$FECHA\"$EXTRAS}" >> "data/analitica/accesos.jsonl"
-          echo "{\"evento\":\"$EVENTO\",\"timestamp\":$TIMESTAMP,\"fecha\":\"$FECHA\"$EXTRAS}" >> "data/usuarios/$USUARIO/historial.jsonl"
-          
-          echo "✅ Registro completado"
 
-      - name: 📊 ACTUALIZAR DASHBOARD
+          # Determinar tipo de interacción y datos adicionales
+          case "$EVENTO" in
+            "push")
+              COMMIT_MSG="${{ github.event.head_commit.message || 'Sin mensaje' }}"
+              COMMIT_MSG_ESCAPED=$(echo "$COMMIT_MSG" | jq -R . | sed 's/^"//;s/"$//')
+              EXTRAS=",\"tipo\":\"push\",\"commit\":\"$COMMIT_MSG_ESCAPED\",\"modificacion\":true"
+              ;;
+            "issues")
+              TITULO="${{ github.event.issue.title }}"
+              ESTADO="${{ github.event.issue.state }}"
+              EXTRAS=",\"tipo\":\"issue\",\"titulo\":\"$TITULO\",\"estado\":\"$ESTADO\",\"accion\":\"$ACCION\",\"modificacion\":true"
+              ;;
+            "pull_request")
+              TITULO="${{ github.event.pull_request.title }}"
+              ESTADO="${{ github.event.pull_request.state }}"
+              EXTRAS=",\"tipo\":\"pr\",\"titulo\":\"$TITULO\",\"estado\":\"$ESTADO\",\"accion\":\"$ACCION\",\"modificacion\":true"
+              ;;
+            "issue_comment")
+              ISSUE_TITULO="${{ github.event.issue.title }}"
+              COMENTARIO_LENGTH="${{ github.event.comment.body.length }}"
+              EXTRAS=",\"tipo\":\"comentario_issue\",\"issue\":\"$ISSUE_TITULO\",\"longitud_comentario\":$COMENTARIO_LENGTH,\"accion\":\"$ACCION\",\"modificacion\":true"
+              ;;
+            "pull_request_review")
+              PR_TITULO="${{ github.event.pull_request.title }}"
+              EXTRAS=",\"tipo\":\"review_pr\",\"pr\":\"$PR_TITULO\",\"accion\":\"$ACCION\",\"modificacion\":true"
+              ;;
+            "pull_request_review_comment")
+              PR_TITULO="${{ github.event.pull_request.title }}"
+              COMENTARIO_LENGTH="${{ github.event.comment.body.length }}"
+              EXTRAS=",\"tipo\":\"comentario_review\",\"pr\":\"$PR_TITULO\",\"longitud_comentario\":$COMENTARIO_LENGTH,\"accion\":\"$ACCION\",\"modificacion\":true"
+              ;;
+            *)
+              EXTRAS=",\"tipo\":\"$EVENTO\",\"modificacion\":false"
+              ;;
+          esac
+
+          # Registrar en archivo principal
+          echo "{\"usuario\":\"$USUARIO\",\"evento\":\"$EVENTO\",\"accion\":\"$ACCION\",\"timestamp\":$TIMESTAMP,\"fecha\":\"$FECHA\"$EXTRAS}" >> "data/analitica/accesos.jsonl"
+
+          # Registrar en historial del usuario
+          echo "{\"evento\":\"$EVENTO\",\"accion\":\"$ACCION\",\"timestamp\":$TIMESTAMP,\"fecha\":\"$FECHA\"$EXTRAS}" >> "data/usuarios/$USUARIO/historial.jsonl"
+
+          echo "✅ Registro de modificación completado"
+          
+      - name: 📊 GENERAR ESTADÍSTICAS AVANZADAS
         run: |
+          # Estadísticas generales
           if [ -f "data/analitica/accesos.jsonl" ]; then
-            TOTAL_EVENTOS=$(cat data/analitica/accesos.jsonl | wc -l)
-            USUARIOS_UNICOS=$(cat data/analitica/accesos.jsonl | jq -r '.usuario' | sort | uniq | wc -l)
+            TOTAL_EVENTOS=$(wc -l < data/analitica/accesos.jsonl)
+            USUARIOS_UNICOS=$(jq -r '.usuario' data/analitica/accesos.jsonl | sort | uniq | wc -l)
+            
+            # Eventos de modificación
+            MODIFICACIONES=$(jq 'select(.modificacion == true)' data/analitica/accesos.jsonl | wc -l)
+            
+            # Tipos de eventos más comunes
+            jq -r '.evento' data/analitica/accesos.jsonl | sort | uniq -c | sort -nr > data/analitica/top_eventos.txt
+            
+            # Usuarios más activos
+            jq -r '.usuario' data/analitica/accesos.jsonl | sort | uniq -c | sort -nr > data/analitica/top_usuarios.txt
+            
           else
             TOTAL_EVENTOS=0
             USUARIOS_UNICOS=0
+            MODIFICACIONES=0
           fi
-          
-          # Crear dashboard simple
-          echo "# 📊 DASHBOARD IZA" > data/dashboard.md
-          echo "" >> data/dashboard.md
-          echo "## 📈 ESTADÍSTICAS" >> data/dashboard.md
-          echo "- **👥 Usuarios únicos:** $USUARIOS_UNICOS" >> data/dashboard.md
-          echo "- **📊 Total interacciones:** $TOTAL_EVENTOS" >> data/dashboard.md
-          echo "- **🕒 Actualización:** $(date)" >> data/dashboard.md
-          echo "" >> data/dashboard.md
-          echo "## 🎯 OBJETIVOS" >> data/dashboard.md
-          echo "- [ ] 5 usuarios únicos" >> data/dashboard.md
-          echo "- [ ] 20 interacciones" >> data/dashboard.md
-          
-          echo "✅ Dashboard actualizado"
 
-      - name: 📤 GUARDAR TODO
+          echo "📊 Estadísticas calculadas:"
+          echo "   - Total eventos: $TOTAL_EVENTOS"
+          echo "   - Modificaciones: $MODIFICACIONES"
+          echo "   - Usuarios únicos: $USUARIOS_UNICOS"
+          
+      - name: 📈 ACTUALIZAR DASHBOARD INTERACTIVO
+        run: |
+          if [ -f "data/analitica/accesos.jsonl" ]; then
+            TOTAL_EVENTOS=$(wc -l < data/analitica/accesos.jsonl)
+            USUARIOS_UNICOS=$(jq -r '.usuario' data/analitica/accesos.jsonl | sort | uniq | wc -l)
+            MODIFICACIONES=$(jq 'select(.modificacion == true)' data/analitica/accesos.jsonl | wc -l)
+            
+            # Últimos 5 eventos
+            ULTIMOS_EVENTOS=$(tail -5 data/analitica/accesos.jsonl | jq -r '[.fecha, .usuario, .evento, .accion] | @tsv' | sed 's/\t/ | /g')
+          else
+            TOTAL_EVENTOS=0
+            USUARIOS_UNICOS=0
+            MODIFICACIONES=0
+            ULTIMOS_EVENTOS="No hay eventos registrados"
+          fi
+
+          # Crear dashboard detallado
+          cat > data/dashboard.md << EOF
+# 📊 DASHBOARD IZA - MAPA DE COMUNIDAD
+
+## 📈 ESTADÍSTICAS PRINCIPALES
+
+- **👥 Usuarios únicos:** $USUARIOS_UNICOS
+- **📊 Total interacciones:** $TOTAL_EVENTOS  
+- **✏️ Modificaciones registradas:** $MODIFICACIONES
+- **📅 Última actualización:** $(date)
+
+## 🎯 OBJETIVOS DE COMUNIDAD
+
+- [ ] 5 usuarios únicos
+- [ ] 20 interacciones totales
+- [ ] 15 modificaciones registradas
+
+## 🔄 ACTIVIDAD RECIENTE
+
+| Fecha | Usuario | Evento | Acción |
+|-------|---------|--------|---------|
+$ULTIMOS_EVENTOS
+
+## 📋 TIPOS DE INTERACCIÓN REGISTRADOS
+
+- ✅ **Push:** Commits al repositorio
+- ✅ **Issues:** Apertura, cierre, edición
+- ✅ **Pull Requests:** Creación, revisión, merge
+- ✅ **Comentarios:** En issues y PRs
+- ✅ **Reviews:** Revisiones de código
+
+> *Sistema optimizado para registrar modificaciones reales*
+EOF
+
+          echo "✅ Dashboard actualizado con estadísticas avanzadas"
+          
+      - name: 📤 COMMIT Y PUSH AUTOMÁTICO
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
+          
           git add data/
-          git commit -m "👁️ Tracking: ${{ github.actor }} - ${{ github.event_name }}" || exit 0
-          git push || exit 0
+          
+          # Verificar si hay cambios
+          if git diff --staged --quiet; then
+            echo "⚠️ No hay cambios para commitear"
+          else
+            git commit -m "👁️ Tracking: ${{ github.actor }} - ${{ github.event_name }} (${{ github.event.action || 'N/A' }})"
+            git push
+            echo "✅ Cambios guardados en el repositorio"
+          fi
