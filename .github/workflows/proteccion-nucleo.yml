@@ -8,12 +8,6 @@ on:
     paths:
       - 'nucleo/**'
 
-permissions:
-  contents: read
-  pull-requests: read
-  actions: read
-  security-events: write
-
 jobs:
   escanear-seguridad:
     runs-on: ubuntu-latest
@@ -36,12 +30,9 @@ jobs:
           fi
 
       - name: Escanear secrets en el núcleo
-        uses: gitleaks/gitleaks-action@v2
-        with:
-          config-path: nucleo/.gitleaks.toml
-          path: ./nucleo
-          no-git: false
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+        uses: gitleaks/gitleaks-action@v1.15.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verificar archivos críticos
         run: |
