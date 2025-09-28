@@ -1,15 +1,26 @@
 name: 🔒 Protección del Núcleo Token 10
+
 on:
+  push:
+    paths:
+      - 'nucleo/**'
   pull_request:
     paths:
       - 'nucleo/**'
 
+permissions:
+  contents: read
+  pull-requests: read
+  actions: read
+  security-events: write
+
 jobs:
   escanear-seguridad:
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout código
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -30,6 +41,7 @@ jobs:
           config-path: nucleo/.gitleaks.toml
           path: ./nucleo
           no-git: false
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verificar archivos críticos
         run: |
