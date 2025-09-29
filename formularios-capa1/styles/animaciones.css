@@ -1,0 +1,55 @@
+/* EFECTO PULSACIÓN CÓSMICA */
+@keyframes pulsar-cosmico {
+    0%, 100% { 
+        box-shadow: 0 0 20px rgba(0, 102, 255, 0.3); 
+    }
+    50% { 
+        box-shadow: 0 0 40px rgba(255, 204, 0, 0.4), 
+                   0 0 60px rgba(255, 0, 51, 0.3); 
+    }
+}
+
+.portal-container {
+    animation: pulsar-cosmico 4s ease-in-out infinite;
+}
+
+/* EFECTO TEXTO RESPLANDECIENTE */
+.titulo-principal {
+    text-shadow: 0 0 10px rgba(0, 102, 255, 0.5);
+}
+
+/* TRANSICIÓN BOTÓN COLAPSAR */
+.btn-colapsar {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-colapsar::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(45deg);
+    transition: all 0.6s ease;
+}
+
+.btn-colapsar:hover::after {
+    transform: rotate(45deg) translate(50%, 50%);
+}
+
+/* EFECTO DE PARTICULAS CÓSMICAS */
+@keyframes particulas {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+}
+
+.particula {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--azul-electrico);
+    animation: particulas 3s infinite linear;
+}
