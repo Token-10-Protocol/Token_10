@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌀 Onboarding - Permisos y Coherencia</title>
+    <link rel="stylesheet" href="styles/tricapa.css">
+    <link rel="stylesheet" href="styles/animaciones.css">
+    <style>
+        .filosofia-iza {
+            background: rgba(255, 204, 0, 0.1);
+            border: 1px solid var(--amarillo-colapso);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-style: italic;
+        }
+        
+        .grid-permisos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .carta-permisos {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid;
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+        
+        .carta-permisos:hover {
+            transform: translateY(-5px);
+        }
+        
+        .visitante { border-color: var(--azul-electrico); }
+        .integrante { border-color: var(--amarillo-colapso); }
+        .colaborador { border-color: var(--rojo-vectorial); }
+        
+        .btn-siguiente {
+            background: var(--degradado-cosmico);
+            color: var(--blanco-puro);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 20px auto;
+            display: block;
+        }
+        
+        .vision-usuario {
+            background: rgba(0, 102, 255, 0.1);
+            border: 1px solid var(--azul-electrico);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="portal-container">
+        <div class="header-portal">
+            <h1 class="titulo-principal">🌀 SISTEMA DE COHERENCIA</h1>
+            <p class="subtitulo">Tu rol determina tu impacto en el ecosistema</p>
+        </div>
+
+        <div class="filosofia-iza">
+            <p>"No luchamos contra el viejo mundo. Plantamos semillas del nuevo."</p>
+            <p>"La simetría es el destino. La coherencia, el camino."</p>
+        </div>
+
+        <div class="vision-usuario">
+            <p>🌌 <strong>Tu visión colapsada:</strong></p>
+            <p><em id="vision-text">Cargando...</em></p>
+        </div>
+
+        <div class="grid-permisos">
+            <div class="carta-permisos visitante">
+                <h3>🔵 VISITANTE CUÁNTICO</h3>
+                <p><strong>Capa 1 - Exploración Inicial</strong></p>
+                <ul>
+                    <li>Colapsar realidades mediante visión</li>
+                    <li>Acceso a documentación pública</li>
+                    <li>Participar en discusiones abiertas</li>
+                </ul>
+                <p><em>Primer paso en la simetría</em></p>
+            </div>
+
+            <div class="carta-permisos integrante">
+                <h3>🟡 INTEGRANTE VECTORIAL</h3>
+                <p><strong>Capa 2 - Contribución Significativa</strong></p>
+                <ul>
+                    <li>Crear proyectos locales verificados</li>
+                    <li>Recibir micro-fondos por impacto</li>
+                    <li>Participar en governance básico</li>
+                </ul>
+                <p><em>Coherencia en acción</em></p>
+            </div>
+
+            <div class="carta-permisos colaborador">
+                <h3>🔴 COLABORADOR NUCLEAR</h3>
+                <p><strong>Capa 3 - Alineación Colectiva</strong></p>
+                <ul>
+                    <li>Proyectos financiados por el vector</li>
+                    <li>Fondos por optimización demostrada</li>
+                    <li>Acceso al núcleo del sistema</li>
+                </ul>
+                <p><em>Máxima coherencia simétrica</em></p>
+            </div>
+        </div>
+
+        <button class="btn-siguiente" onclick="continuar()">
+            🌱 PLANTAR MI SEMILLA
+        </button>
+
+        <div class="footer-portal">
+            <p>⚡ <em>Token de Coherencia - Donde el dinero fluye siguiendo la coherencia</em> ⚡</p>
+        </div>
+    </div>
+
+    <script>
+        // Mostrar visión del usuario
+        const vision = localStorage.getItem('vision-colapsada') || 'Visión no registrada';
+        document.getElementById('vision-text').textContent = vision;
+        
+        function continuar() {
+            // Redirigir a documentación del proyecto
+            window.location.href = 'https://github.com/Token-10-Protocol/Token_10';
+        }
+    </script>
+</body>
+</html>
