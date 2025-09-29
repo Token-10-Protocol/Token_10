@@ -50,3 +50,4 @@ jobs:
             fi
           done
           echo "✅ Protección del núcleo verificada"
+          
