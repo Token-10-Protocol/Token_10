@@ -38,7 +38,7 @@ jobs:
         run: |
           echo "📋 Verificando archivos críticos..."
           CRITICAL_FILES=(
-            "nucleo/.acceso/sistema-puntaje.py"
+            "nucleo/sistema-acceso/control-estados/sistema-puntaje.py"
             "nucleo/.gitleaks.toml"
           )
           
