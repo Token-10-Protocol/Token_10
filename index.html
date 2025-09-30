@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vector Token 10 - Portal Cuántico</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #0a0a1a;
+            color: #e6e6ff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+            overflow: hidden;
+        }
+        
+        .portal-container {
+            text-align: center;
+            padding: 2rem;
+            max-width: 100%;
+            width: 100%;
+        }
+        
+        .titulo-portal {
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            color: #8a2be2;
+            text-shadow: 0 0 20px #8a2be2;
+            margin-bottom: 1rem;
+            animation: pulso 3s infinite;
+            word-wrap: break-word;
+        }
+        
+        .subtitulo {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            opacity: 0.8;
+            margin-bottom: 2rem;
+            line-height: 1.4;
+        }
+        
+        .contador {
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            color: #ff4dff;
+            margin-bottom: 2rem;
+            font-weight: bold;
+        }
+        
+        .simbolo-cuantico {
+            font-size: clamp(2rem, 8vw, 3rem);
+            margin-bottom: 2rem;
+            animation: rotar 8s infinite linear;
+            display: inline-block;
+        }
+        
+        .mensaje {
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            opacity: 0.7;
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        .boton-acceso {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            color: #8a2be2;
+            border: 2px solid #8a2be2;
+            border-radius: 25px;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .boton-acceso:hover {
+            background: #8a2be2;
+            color: #0a0a1a;
+            box-shadow: 0 0 20px #8a2be2;
+        }
+        
+        @keyframes pulso {
+            0%, 100% { 
+                opacity: 1; 
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.8; 
+                transform: scale(1.02);
+            }
+        }
+        
+        @keyframes rotar {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Media queries para dispositivos muy pequeños */
+        @media (max-width: 480px) {
+            .portal-container {
+                padding: 1rem;
+            }
+            
+            .mensaje {
+                max-width: 100%;
+                padding: 0 0.5rem;
+            }
+            
+            .boton-acceso {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 320px) {
+            .titulo-portal {
+                font-size: 1.5rem;
+            }
+            
+            .subtitulo {
+                font-size: 0.9rem;
+            }
+            
+            .contador {
+                font-size: 1rem;
+            }
+        }
+        
+        /* Soporte para orientación landscape en móviles */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .portal-container {
+                padding: 1rem;
+            }
+            
+            .simbolo-cuantico {
+                margin-bottom: 1rem;
+                font-size: 2rem;
+            }
+            
+            .titulo-portal {
+                margin-bottom: 0.5rem;
+            }
+            
+            .subtitulo {
+                margin-bottom: 1rem;
+            }
+            
+            .contador {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="portal-container">
+        <div class="simbolo-cuantico">⚡</div>
+        <div class="titulo-portal">VECTOR TOKEN 10</div>
+        <div class="subtitulo">Portal de Acceso a la Capa Cuántica</div>
+        <div class="contador" id="contador">Redirigiendo en 3...</div>
+        <div class="mensaje">
+            Estás siendo transportado a la capa cuántica donde la simetría 
+            espera tu observación consciente. Prepárate para el colapso dimensional.
+        </div>
+        <a href="capa_kuantica.html" class="boton-acceso" id="botonAcceso">
+            Acceso Inmediato
+        </a>
+    </div>
+
+    <script>
+        // Contador regresivo elegante
+        let segundos = 3;
+        const contador = document.getElementById('contador');
+        const botonAcceso = document.getElementById('botonAcceso');
+        
+        function redirigir() {
+            window.location.href = 'capa_kuantica.html';
+        }
+        
+        const intervalo = setInterval(() => {
+            segundos--;
+            contador.textContent = `Redirigiendo en ${segundos}...`;
+            
+            if (segundos <= 0) {
+                clearInterval(intervalo);
+                redirigir();
+            }
+        }, 1000);
+        
+        // Redirección inmediata si hay interacción
+        document.addEventListener('click', (e) => {
+            if (e.target !== botonAcceso) {
+                clearInterval(intervalo);
+                redirigir();
+            }
+        });
+        
+        document.addEventListener('keypress', () => {
+            clearInterval(intervalo);
+            redirigir();
+        });
+        
+        document.addEventListener('touchstart', () => {
+            clearInterval(intervalo);
+            redirigir();
+        });
+        
+        // Botón de acceso manual
+        botonAcceso.addEventListener('click', (e) => {
+            e.preventDefault();
+            clearInterval(intervalo);
+            redirigir();
+        });
+        
+        // Prevenir zoom en dispositivos móviles
+        document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
+        });
+        
+        document.addEventListener('gesturechange', function(e) {
+            e.preventDefault();
+        });
+        
+        document.addEventListener('gestureend', function(e) {
+            e.preventDefault();
+        });
+    </script>
+</body>
+</html>
