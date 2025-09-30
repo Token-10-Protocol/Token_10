@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vector Token 10 - Portal Cuántico</title>
+    <style>
+        body {
+            background: #0a0a1a;
+            color: #e6e6ff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        
+        .portal-container {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .titulo-portal {
+            font-size: 2.5rem;
+            color: #8a2be2;
+            text-shadow: 0 0 20px #8a2be2;
+            margin-bottom: 1rem;
+            animation: pulso 3s infinite;
+        }
+        
+        .subtitulo {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+        }
+        
+        .contador {
+            font-size: 1.5rem;
+            color: #ff4dff;
+            margin-bottom: 2rem;
+        }
+        
+        .simbolo-cuantico {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            animation: rotar 8s infinite linear;
+        }
+        
+        .mensaje {
+            font-size: 1rem;
+            opacity: 0.7;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        @keyframes pulso {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        @keyframes rotar {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="portal-container">
+        <div class="simbolo-cuantico">⚡</div>
+        <div class="titulo-portal">VECTOR TOKEN 10</div>
+        <div class="subtitulo">Portal de Acceso al Vacío Activo</div>
+        <div class="contador" id="contador">Redirigiendo en 3...</div>
+        <div class="mensaje">
+            Estás siendo transportado al núcleo 3x3 donde la simetría cuántica 
+            espera tu observación consciente. Prepárate para el colapso.
+        </div>
+    </div>
+
+    <script>
+        // Contador regresivo elegante
+        let segundos = 3;
+        const contador = document.getElementById('contador');
+        
+        const intervalo = setInterval(() => {
+            segundos--;
+            contador.textContent = `Redirigiendo en ${segundos}...`;
+            
+            if (segundos <= 0) {
+                clearInterval(intervalo);
+                window.location.href = 'vacío-activo-tres-cuerpos.html';
+            }
+        }, 1000);
+        
+        // Redirección inmediata si hay interacción
+        document.addEventListener('click', () => {
+            clearInterval(intervalo);
+            window.location.href = 'vacío-activo-tres-cuerpos.html';
+        });
+        
+        document.addEventListener('keypress', () => {
+            clearInterval(intervalo);
+            window.location.href = 'vacío-activo-tres-cuerpos.html';
+        });
+    </script>
+</body>
+</html>
