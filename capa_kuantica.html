@@ -1,0 +1,1627 @@
+Pagina inicio
+Presentación
+Tercera capa.
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vacío Activo - Tercera Capa</title>
+    <style>
+        :root {
+            --nucleo: #8a2be2;
+            --lila: #c77dff;
+            --lila-fluo: #e0aaff;
+            --fluido: #ff4dff;
+            --reparacion: #00ff88;
+            --fondo: #0a0a1a;
+            --texto: #e6e6ff;
+            --explosion-1: #ff0066;
+            --explosion-2: #ff9900;
+            --explosion-3: #00ccff;
+            --raiz-1: #9d4edd;
+            --raiz-2: #7b2cbf;
+            --raiz-3: #5a189a;
+            --rastro: rgba(255, 77, 255, 0.3);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+        
+        body {
+            background: var(--fondo);
+            color: var(--texto);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            overflow-x: hidden;
+        }
+        
+        .contenedor-principal {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        .banner-minimalista {
+            background: transparent;
+            padding: 0.8rem 1.5rem;
+            border: 1px solid var(--lila-fluo);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+        
+        .banner-minimalista::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border: 1px solid var(--fluido);
+            border-radius: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .banner-minimalista.activo {
+            opacity: 1;
+            border-color: var(--reparacion);
+        }
+        
+        .banner-minimalista.activo::before {
+            opacity: 1;
+        }
+        
+        .simbolo-banner {
+            display: inline-block;
+            margin-right: 0.8rem;
+            vertical-align: middle;
+        }
+        
+        .cuadrado {
+            width: 12px;
+            height: 12px;
+            background: var(--lila-fluo);
+            display: inline-block;
+            margin-right: 6px;
+            border-radius: 1px;
+        }
+        
+        .lineas-verticales {
+            display: inline-flex;
+            flex-direction: column;
+            margin: 0 6px;
+            gap: 2px;
+        }
+        
+        .linea-vertical {
+            width: 2px;
+            height: 8px;
+            background: var(--lila-fluo);
+        }
+        
+        .circulo-banner {
+            width: 10px;
+            height: 10px;
+            background: var(--fluido);
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 6px;
+        }
+        
+        .reloj-cosmico {
+            background: #000000;
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            border: 3px solid var(--nucleo);
+            box-shadow: 0 0 50px var(--nucleo);
+            width: 100%;
+            max-width: 700px;
+            min-height: 700px;
+            overflow: hidden;
+        }
+        
+        .reloj-titulo {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 15px currentColor;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: color 1.5s ease;
+        }
+        
+        .reloj-subtitulo {
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-bottom: 2rem;
+        }
+        
+        .info-tiempo {
+            text-align: center;
+            font-size: 0.8rem;
+            opacity: 0.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .contenedor-esfera {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .esfera-cuantica {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #000000, #1a1a2e);
+            border: 3px solid var(--nucleo);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                0 0 30px var(--nucleo),
+                inset 0 0 30px rgba(138, 43, 226, 0.3);
+            position: relative;
+            z-index: 3;
+        }
+        
+        .valor-principal {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: var(--nucleo);
+            text-shadow: 0 0 20px var(--nucleo);
+        }
+        
+        .linea-umbral {
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            border: 2px dashed var(--lila-fluo);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.4;
+            pointer-events: none;
+            z-index: 2;
+        }
+        
+        /* Sistema de Tres Cuerpos - Electrones */
+        .electrones-contenedor {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 4;
+        }
+        
+        .electron {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--reparacion), transparent 70%);
+            box-shadow: 0 0 10px var(--reparacion);
+            pointer-events: none;
+            z-index: 4;
+            transition: all 0.5s ease;
+        }
+        
+        .electron-1 { 
+            width: 14px; height: 14px; 
+            background: radial-gradient(circle, var(--reparacion), var(--lila-fluo) 30%, transparent 70%);
+        }
+        .electron-2 { 
+            width: 12px; height: 12px; 
+            background: radial-gradient(circle, var(--lila-fluo), var(--fluido) 30%, transparent 70%);
+        }
+        .electron-3 { 
+            width: 16px; height: 16px; 
+            background: radial-gradient(circle, var(--fluido), var(--reparacion) 30%, transparent 70%);
+        }
+        
+        .primo-resonante {
+            text-align: center;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+        
+        .primo-valor {
+            color: var(--lila-fluo);
+            font-weight: bold;
+            text-shadow: 0 0 10px var(--lila-fluo);
+        }
+        
+        .panel-informacion {
+            background: rgba(138, 43, 226, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            border: 1px solid var(--nucleo);
+            margin-bottom: 1rem;
+        }
+        
+        .contenedor-paneles {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .panel-cuantico {
+            background: rgba(138, 43, 226, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            border: 1px solid var(--nucleo);
+        }
+        
+        .panel-reparacion {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--reparacion);
+        }
+        
+        .titulo-panel {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--lila-fluo);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+        
+        .titulo-reparacion {
+            color: var(--reparacion);
+        }
+        
+        .contador-cuantico {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+        
+        .cuantum-actual {
+            color: var(--fluido);
+            font-weight: bold;
+        }
+        
+        .proximo-cuantum {
+            color: var(--lila);
+        }
+        
+        .reparacion-activa {
+            color: var(--reparacion);
+            font-weight: bold;
+        }
+        
+        .barra-progreso {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .progreso-cuantico {
+            height: 100%;
+            background: linear-gradient(90deg, var(--lila), var(--fluido));
+            border-radius: 3px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        
+        .progreso-reparacion {
+            background: linear-gradient(90deg, var(--reparacion), #00ffcc);
+        }
+        
+        .datos-reloj {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+            font-size: 0.9rem;
+        }
+        
+        .dato-item {
+            padding: 0.8rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            border-left: 3px solid var(--nucleo);
+        }
+        
+        .dato-label {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-bottom: 0.3rem;
+        }
+        
+        .dato-valor {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--nucleo);
+        }
+        
+        /* Elementos de partículas */
+        .tunel-emisor {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 8;
+            opacity: 0;
+        }
+        
+        .tunel-nucleo {
+            background: radial-gradient(circle, var(--lila), transparent 70%);
+            box-shadow: 0 0 12px var(--lila);
+        }
+        
+        .tunel-activo {
+            background: radial-gradient(circle, var(--lila-fluo), var(--lila) 60%, transparent 80%);
+            box-shadow: 0 0 15px var(--lila-fluo);
+        }
+        
+        .particula-fluido {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: var(--fluido);
+            border-radius: 50% 50% 50% 0;
+            filter: blur(0.5px);
+            pointer-events: none;
+            z-index: 10;
+            transform-origin: center;
+            will-change: transform, left, top;
+            opacity: 0.8;
+        }
+        
+        .rastro-particula {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--rastro);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9;
+        }
+        
+        .efecto-matriz {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--lila) 0%, var(--lila-fluo) 20%, transparent 60%);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 5;
+            will-change: transform, opacity;
+        }
+        
+        .log-evento {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            right: 8px;
+            font-size: 0.7rem;
+            opacity: 0.6;
+            color: var(--lila-fluo);
+            text-align: center;
+        }
+        
+        .primo-dominante {
+            color: var(--reparacion);
+            font-weight: bold;
+        }
+        
+        /* Nuevos estilos para explosiones */
+        .explosion {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 6;
+            transform-origin: center;
+        }
+        
+        .explosion-1 {
+            background: radial-gradient(circle, var(--explosion-1), transparent 70%);
+            box-shadow: 0 0 15px var(--explosion-1);
+        }
+        
+        .explosion-2 {
+            background: radial-gradient(circle, var(--explosion-2), transparent 70%);
+            box-shadow: 0 0 15px var(--explosion-2);
+        }
+        
+        .explosion-3 {
+            background: radial-gradient(circle, var(--explosion-3), transparent 70%);
+            box-shadow: 0 0 15px var(--explosion-3);
+        }
+        
+        .efecto-brillo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(138, 43, 226, 0.3), transparent 70%);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1;
+            border-radius: 20px;
+        }
+        
+        /* Estilos para raíces */
+        .raiz {
+            position: absolute;
+            pointer-events: none;
+            z-index: 7;
+            transform-origin: center;
+        }
+        
+        .raiz-1 {
+            background: linear-gradient(to right, transparent, var(--raiz-1), transparent);
+            height: 2px;
+            filter: blur(0.5px);
+        }
+        
+        .raiz-2 {
+            background: linear-gradient(to right, transparent, var(--raiz-2), transparent);
+            height: 2px;
+            filter: blur(0.5px);
+        }
+        
+        .raiz-3 {
+            background: linear-gradient(to right, transparent, var(--raiz-3), transparent);
+            height: 2px;
+            filter: blur(0.5px);
+        }
+        
+        .punto-raiz {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 8;
+        }
+        
+        .punto-raiz-1 { background: var(--raiz-1); }
+        .punto-raiz-2 { background: var(--raiz-2); }
+        .punto-raiz-3 { background: var(--raiz-3); }
+        
+        .onda-gravitacional {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid var(--reparacion);
+            pointer-events: none;
+            z-index: 11;
+            transform-origin: center;
+        }
+        
+        .pie-minimalista {
+            text-align: center;
+            font-size: 0.8rem;
+            opacity: 0.5;
+            margin-top: 1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        /* Responsividad */
+        @media (max-width: 768px) {
+            .reloj-cosmico {
+                min-height: 650px;
+                padding: 1rem;
+            }
+            
+            .contenedor-esfera {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .linea-umbral {
+                width: 170px;
+                height: 170px;
+            }
+            
+            .valor-principal {
+                font-size: 2rem;
+            }
+            
+            .contenedor-paneles {
+                grid-template-columns: 1fr;
+            }
+            
+            .datos-reloj {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor-principal">
+        <div class="banner-minimalista" id="bannerVisualizacion">
+            <span class="simbolo-banner">
+                <span class="cuadrado"></span>
+                <span class="lineas-verticales">
+                    <div class="linea-vertical"></div>
+                    <div class="linea-vertical"></div>
+                </span>
+                <span class="circulo-banner"></span>
+            </span>
+            Consciencia Activa
+        </div>
+        
+        <div class="reloj-cosmico" id="relojNucleo">
+            <div class="efecto-brillo" id="efectoBrillo"></div>
+            
+            <div class="contenedor-esfera">
+                <div class="linea-umbral"></div>
+                <div class="esfera-cuantica" id="esferaCuantica">
+                    <div class="valor-principal" id="valorNucleo">87%</div>
+                    <div class="electrones-contenedor" id="electronesContenedor"></div>
+                </div>
+            </div>
+            
+            <div class="reloj-titulo" id="tituloVacíoActivo">VACÍO ACTIVO</div>
+            <div class="reloj-subtitulo">Tercera Capa | Vector _ Extensor || L3Y IZA</div>
+            
+            <div class="info-tiempo" id="infoTiempo"></div>
+            
+            <div class="primo-resonante">
+                Primo actual: <span class="primo-valor" id="primoResonante">227</span>
+                | Dominante: <span class="primo-dominante" id="primoDominante">-</span>
+            </div>
+            
+            <div class="panel-informacion">
+                <div class="contenedor-paneles">
+                    <div class="panel-cuantico">
+                        <div class="titulo-panel">Partículas Cuánticas</div>
+                        <div class="contador-cuantico">
+                            <span>Actual: <span class="cuantum-actual" id="cuantumActual">0</span></span>
+                            <span>Próximo: <span class="proximo-cuantum" id="proximoCuantum">5</span></span>
+                        </div>
+                        <div class="barra-progreso">
+                            <div class="progreso-cuantico" id="progresoCuantico"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel-cuantico panel-reparacion">
+                        <div class="titulo-panel titulo-reparacion">Reparación Tejido</div>
+                        <div class="contador-cuantico">
+                            <span>Átomos: <span id="electronesActivos">0/3</span></span>
+                            <span>Meta: <span class="reparacion-activa" id="metaReparacion">?</span></span>
+                        </div>
+                        <div class="barra-progreso">
+                            <div class="progreso-cuantico progreso-reparacion" id="progresoReparacion"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="datos-reloj">
+                    <div class="dato-item">
+                        <div class="dato-label">Coherencia</div>
+                        <div class="dato-valor" id="coherenciaNucleo">0.92</div>
+                    </div>
+                    <div class="dato-item">
+                        <div class="dato-label">Túneles</div>
+                        <div class="dato-valor" id="tunelesNucleo">0</div>
+                    </div>
+                    <div class="dato-item">
+                        <div class="dato-label">Partículas</div>
+                        <div class="dato-valor" id="particulasNucleo">0</div>
+                    </div>
+                    <div class="dato-item">
+                        <div class="dato-label">Estado</div>
+                        <div class="dato-valor" id="estadoVacío">QUIETUD</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pie-minimalista" id="pieMinimalista">TRAILER - Busca palomitas</div>
+            
+            <div class="log-evento" id="logEvento">Sistema inicializado - Esperando activación</div>
+        </div>
+    </div>
+
+    <script>
+        // Estado del sistema cuántico mejorado
+        const estadoSistema = {
+            // Sistema básico
+            observadorPresente: false,
+            coherenciaAcumulada: 0.92,
+            ciclosSinEvento: 0,
+            particulasActivas: new Set(),
+            
+            // Sistema de cuantización básico
+            cuantumActual: 0,
+            particulasParaProximoCuantum: 5,
+            progresoCuantico: 0,
+            
+            // Sistema de reparación de tejido con tres cuerpos
+            ciclosCompletados: 0,
+            metaReparacion: 3,
+            progresoReparacion: 0,
+            historicoPrimos: [],
+            primoDominante: null,
+            reparacionAlcanzada: false,
+            electronesColocados: 0,
+            maxElectrones: 3,
+            electronesData: [],
+            raicesActivas: [],
+            
+            // Control de tiempo
+            ultimaActualizacion: Date.now(),
+            intervaloActualizacion: 3000,
+            
+            // Nuevos estados para mejoras
+            atomos: [],
+            brilloActivo: false,
+            ultimaExplosion: 0,
+            contadorImpactos: 0,
+            contadorParticulas: 0,
+            centroX: 0,
+            centroY: 0,
+            
+            // Información dinámica para el pie
+            infoDinamica: {
+                mensaje: "TRAILER - Busca palomitas",
+                color: "#8a2be2",
+                transicionActiva: false
+            },
+            
+            // Color dinámico del título
+            colorTituloActual: "#8a2be2",
+            ultimoAtomoCreado: null
+        };
+
+        // Pool de objetos para optimización
+        const particulaPool = [];
+        const efectoPool = [];
+        const explosionPool = [];
+        const raizPool = [];
+        const puntoRaizPool = [];
+        const rastroPool = [];
+        const ondaPool = [];
+
+        // DETECCIÓN DE VISUALIZACIÓN
+        function inicializarDeteccionVisualizacion() {
+            const banner = document.getElementById('bannerVisualizacion');
+            
+            const eventos = ['mousemove', 'click', 'keypress', 'scroll', 'touchstart'];
+            
+            let visualizacionConfirmada = false;
+            
+            function confirmarVisualizacion() {
+                if (!visualizacionConfirmada) {
+                    visualizacionConfirmada = true;
+                    estadoSistema.observadorPresente = true;
+                    banner.classList.add('activo');
+                    actualizarLogEvento('Observador consciente detectado - Sistema activado');
+                    
+                    // Calcular centro una vez que el DOM esté listo
+                    calcularCentroSistema();
+                    
+                    // Iniciar ciclo del sistema
+                    iniciarCicloSistema();
+                    
+                    // Iniciar titileo del banner
+                    iniciarTitileoBanner();
+                    
+                    eventos.forEach(evento => {
+                        document.removeEventListener(evento, confirmarVisualizacion);
+                    });
+                }
+            }
+            
+            eventos.forEach(evento => {
+                document.addEventListener(evento, confirmarVisualizacion, { once: true });
+            });
+            
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden && !visualizacionConfirmada) {
+                    confirmarVisualizacion();
+                }
+            });
+            
+            setTimeout(() => {
+                if (!visualizacionConfirmada) {
+                    confirmarVisualizacion();
+                    actualizarLogEvento('Visualización automática detectada');
+                }
+            }, 5000);
+        }
+
+        // CALCULAR CENTRO DEL SISTEMA
+        function calcularCentroSistema() {
+            const esfera = document.getElementById('esferaCuantica');
+            const rect = esfera.getBoundingClientRect();
+            const relojRect = document.getElementById('relojNucleo').getBoundingClientRect();
+            
+            estadoSistema.centroX = rect.left + rect.width/2 - relojRect.left;
+            estadoSistema.centroY = rect.top + rect.height/2 - relojRect.top;
+        }
+
+        // TITILEO DEL BANNER
+        function iniciarTitileoBanner() {
+            const banner = document.getElementById('bannerVisualizacion');
+            let ultimoTitileo = 0;
+            
+            function actualizarTitileo() {
+                const ahora = Date.now();
+                if (ahora - ultimoTitileo > 1500) {
+                    const intensidad = 0.4 + (Math.random() * 0.6);
+                    banner.style.opacity = intensidad;
+                    ultimoTitileo = ahora;
+                }
+                requestAnimationFrame(actualizarTitileo);
+            }
+            actualizarTitileo();
+        }
+
+        // INICIAR CICLO DEL SISTEMA
+        function iniciarCicloSistema() {
+            // Iniciar actualización del porcentaje
+            setInterval(actualizarPorcentaje, 2000);
+            
+            // Iniciar generación de túneles
+            setInterval(generarEvento, estadoSistema.intervaloActualizacion);
+            
+            // Iniciar sistema de partículas
+            sistemaParticulas.iniciar();
+            
+            // Iniciar sistema de explosiones
+            iniciarSistemaExplosiones();
+        }
+
+        // ACTUALIZAR PORCENTAJE DINÁMICAMENTE
+        function actualizarPorcentaje() {
+            const valorElement = document.getElementById('valorNucleo');
+            let porcentaje = parseInt(valorElement.textContent);
+            
+            // Variación orgánica del porcentaje
+            const variacion = (Math.random() * 6) - 3; // -3 a +3
+            porcentaje = Math.max(65, Math.min(95, porcentaje + variacion));
+            
+            valorElement.textContent = Math.round(porcentaje) + '%';
+            
+            // Actualizar coherencia
+            const coherencia = porcentaje / 100;
+            document.getElementById('coherenciaNucleo').textContent = coherencia.toFixed(2);
+            estadoSistema.coherenciaAcumulada = (estadoSistema.coherenciaAcumulada * 0.9) + (coherencia * 0.1);
+            
+            // Actualizar primo resonante
+            const primo = encontrarPrimoResonante(porcentaje);
+            document.getElementById('primoResonante').textContent = primo;
+        }
+
+        // GENERAR EVENTOS (TÚNELES)
+        function generarEvento() {
+            if (!estadoSistema.observadorPresente) return;
+            
+            const porcentaje = parseInt(document.getElementById('valorNucleo').textContent);
+            const coherencia = porcentaje / 100;
+            const primo = encontrarPrimoResonante(porcentaje);
+            
+            const random = Math.random();
+            const umbralEvento = 0.7 - (coherencia * 0.3);
+            
+            if (random > umbralEvento) {
+                const conParticulas = random > (umbralEvento * 0.8);
+                crearTunelEmisor(primo, porcentaje, conParticulas);
+                
+                document.getElementById('estadoVacío').textContent = conParticulas ? 'EMISIÓN' : 'TÚNEL';
+                const tuneles = document.getElementById('tunelesNucleo');
+                tuneles.textContent = parseInt(tuneles.textContent) + 1;
+                
+                setTimeout(() => {
+                    tuneles.textContent = Math.max(0, parseInt(tuneles.textContent) - 1);
+                }, 2000);
+            } else {
+                estadoSistema.ciclosSinEvento++;
+                document.getElementById('estadoVacío').textContent = 'QUIETUD';
+            }
+        }
+
+        // SISTEMA DE TRES CUERPOS - ÁTOMOS DINÁMICOS CON GRAVEDAD Y MAGNETISMO
+        function inicializarTresCuerpos() {
+            const contenedor = document.getElementById('electronesContenedor');
+            const radioEsfera = 70;
+            
+            // Crear tres átomos iniciales con propiedades aleatorias
+            for (let i = 0; i < 3; i++) {
+                crearAtomoAleatorio(contenedor, radioEsfera, i);
+            }
+            
+            actualizarPanelReparacion();
+            iniciarDinamicaTresCuerpos();
+        }
+
+        // CREAR ÁTOMO ALEATORIO
+        function crearAtomoAleatorio(contenedor, radioEsfera, indice) {
+            // Determinar propiedades aleatorias
+            const masa = 0.8 + (Math.random() * 0.8); // 0.8 a 1.6
+            const carga = Math.random() > 0.5 ? 1 : -1; // Polaridad aleatoria
+            const tipo = (indice % 3) + 1;
+            
+            // Posición inicial aleatoria dentro de la esfera
+            const angulo = Math.random() * 2 * Math.PI;
+            const distancia = 15 + (Math.random() * 40); // 15 a 55
+            const x = Math.cos(angulo) * distancia;
+            const y = Math.sin(angulo) * distancia;
+            
+            const atomo = document.createElement('div');
+            atomo.className = `electron electron-${tipo}`;
+            atomo.style.left = `calc(50% + ${x}px)`;
+            atomo.style.top = `calc(50% + ${y}px)`;
+            
+            contenedor.appendChild(atomo);
+            
+            estadoSistema.electronesData.push({
+                elemento: atomo,
+                x: x,
+                y: y,
+                masa: masa,
+                carga: carga,
+                tipo: tipo,
+                velocidadX: (Math.random() - 0.5) * 0.2, // Velocidad inicial aleatoria
+                velocidadY: (Math.random() - 0.5) * 0.2,
+                radio: 6 + (masa * 3) // Radio proporcional a la masa
+            });
+            
+            estadoSistema.electronesColocados++;
+            
+            // Guardar como último átomo creado
+            estadoSistema.ultimoAtomoCreado = { tipo, masa, carga };
+            
+            // Actualizar color del título
+            actualizarColorTitulo(tipo);
+        }
+
+        // ACTUALIZAR COLOR DEL TÍTULO SEGÚN EL ÚLTIMO ÁTOMO
+        function actualizarColorTitulo(tipoAtomo) {
+            const colores = {
+                1: '#ff0066',  // Rojo fluorescente
+                2: '#ff9900',  // Naranja
+                3: '#00ccff'   // Azul claro
+            };
+            
+            const nuevoColor = colores[tipoAtomo] || '#8a2be2';
+            estadoSistema.colorTituloActual = nuevoColor;
+            
+            const titulo = document.getElementById('tituloVacíoActivo');
+            titulo.style.color = nuevoColor;
+        }
+
+        // DINÁMICA DE TRES CUERPOS MEJORADA CON GRAVEDAD Y MAGNETISMO
+        function iniciarDinamicaTresCuerpos() {
+            const G = 0.0003; // Constante gravitacional
+            const K = 0.0005; // Constante electromagnética
+            const radioEsfera = 70;
+            const amortiguacion = 0.97;
+            const fuerzaCentro = 0.0001; // Fuerza que atrae hacia el centro
+            
+            function animarTresCuerpos() {
+                estadoSistema.electronesData.forEach((atomo, i) => {
+                    let fuerzaX = 0;
+                    let fuerzaY = 0;
+                    
+                    // Fuerza hacia el centro (vacío activo tiende a la simetría)
+                    const distanciaCentro = Math.sqrt(atomo.x * atomo.x + atomo.y * atomo.y);
+                    fuerzaX -= (atomo.x / distanciaCentro) * fuerzaCentro * distanciaCentro;
+                    fuerzaY -= (atomo.y / distanciaCentro) * fuerzaCentro * distanciaCentro;
+                    
+                    // Interacciones con otros átomos
+                    estadoSistema.electronesData.forEach((otro, j) => {
+                        if (i !== j) {
+                            const dx = otro.x - atomo.x;
+                            const dy = otro.y - atomo.y;
+                            const distancia = Math.sqrt(dx * dx + dy * dy);
+                            const distanciaMinima = atomo.radio + otro.radio;
+                            
+                            // Fuerza gravitacional (siempre atractiva)
+                            if (distancia > distanciaMinima) {
+                                const fuerzaG = G * atomo.masa * otro.masa / (distancia * distancia);
+                                fuerzaX += fuerzaG * dx / distancia;
+                                fuerzaY += fuerzaG * dy / distancia;
+                            } else {
+                                // Repulsión cuando están muy cerca
+                                const fuerzaRepulsiva = 0.008;
+                                fuerzaX -= fuerzaRepulsiva * dx / distancia;
+                                fuerzaY -= fuerzaRepulsiva * dy / distancia;
+                            }
+                            
+                            // Fuerza electromagnética (atracción/repulsión por carga)
+                            const fuerzaEM = K * atomo.carga * otro.carga / (distancia * distancia);
+                            fuerzaX += fuerzaEM * dx / distancia;
+                            fuerzaY += fuerzaEM * dy / distancia;
+                        }
+                    });
+                    
+                    // Aplicar fuerzas
+                    atomo.velocidadX = (atomo.velocidadX + fuerzaX) * amortiguacion;
+                    atomo.velocidadY = (atomo.velocidadY + fuerzaY) * amortiguacion;
+                    
+                    // Actualizar posición
+                    atomo.x += atomo.velocidadX;
+                    atomo.y += atomo.velocidadY;
+                    
+                    // Verificar límites de la esfera (sin rebote, fluido)
+                    const nuevaDistanciaCentro = Math.sqrt(atomo.x * atomo.x + atomo.y * atomo.y);
+                    if (nuevaDistanciaCentro > radioEsfera - atomo.radio) {
+                        const factor = (radioEsfera - atomo.radio) / nuevaDistanciaCentro;
+                        atomo.x *= factor;
+                        atomo.y *= factor;
+                        // En fluido, no hay rebote, solo desaceleración
+                        atomo.velocidadX *= 0.8;
+                        atomo.velocidadY *= 0.8;
+                    }
+                    
+                    // Actualizar posición visual
+                    atomo.elemento.style.left = `calc(50% + ${atomo.x}px)`;
+                    atomo.elemento.style.top = `calc(50% + ${atomo.y}px)`;
+                });
+                
+                requestAnimationFrame(animarTresCuerpos);
+            }
+            
+            animarTresCuerpos();
+        }
+
+        // APLICAR PERTURBACIÓN A LOS ÁTOMOS CON MOVIMIENTO FLUIDO
+        function aplicarPerturbacionAtomos(x, y, fuerza, radio, anguloOnda) {
+            estadoSistema.electronesData.forEach(atomo => {
+                const dx = atomo.x - (x - estadoSistema.centroX);
+                const dy = atomo.y - (y - estadoSistema.centroY);
+                const distancia = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distancia < radio) {
+                    // Aplicar fuerza en dirección de la onda (movimiento fluido)
+                    const intensidad = fuerza * (1 - distancia / radio);
+                    
+                    // En fluido, el arrastre es en la dirección de la onda
+                    const anguloArrastre = anguloOnda + (Math.random() - 0.5) * 0.5; // Pequeña variación
+                    
+                    atomo.velocidadX += Math.cos(anguloArrastre) * intensidad;
+                    atomo.velocidadY += Math.sin(anguloArrastre) * intensidad;
+                    
+                    // Efecto de arrastre fluido - movimiento continuo
+                    atomo.velocidadX *= 0.95; // Ligera desaceleración
+                    atomo.velocidadY *= 0.95;
+                }
+            });
+        }
+
+        // FUNCIONES DEL SISTEMA CUÁNTICO
+        function esPrimo(num) {
+            if (num <= 1) return false;
+            if (num <= 3) return true;
+            if (num % 2 === 0 || num % 3 === 0) return false;
+            for (let i = 5; i * i <= num; i += 6) {
+                if (num % i === 0 || num % (i + 2) === 0) return false;
+            }
+            return true;
+        }
+
+        function encontrarPrimoResonante(porcentaje) {
+            let primo = Math.floor(porcentaje * 2.3) + 10;
+            while (!esPrimo(primo) && primo < 1000) primo++;
+            return esPrimo(primo) ? primo : 2;
+        }
+
+        function analizarPrimosDominantes() {
+            if (estadoSistema.historicoPrimos.length === 0) return null;
+            
+            const frecuencia = {};
+            estadoSistema.historicoPrimos.forEach(primo => {
+                frecuencia[primo] = (frecuencia[primo] || 0) + 1;
+            });
+            
+            let primoDominante = null;
+            let maxFrecuencia = 0;
+            
+            for (const [primo, count] of Object.entries(frecuencia)) {
+                if (count > maxFrecuencia) {
+                    maxFrecuencia = count;
+                    primoDominante = parseInt(primo);
+                }
+            }
+            
+            if (primoDominante) {
+                estadoSistema.metaReparacion = (primoDominante % 5) + 2;
+            }
+            
+            return primoDominante;
+        }
+
+        function verificarReparacionTejido() {
+            if (estadoSistema.ciclosCompletados >= 4 && estadoSistema.primoDominante) {
+                const coherencia = parseFloat(document.getElementById('coherenciaNucleo').textContent);
+                
+                if (coherencia > 0.75 && estadoSistema.progresoReparacion >= estadoSistema.metaReparacion) {
+                    estadoSistema.reparacionAlcanzada = true;
+                    
+                    const nuevoCuantum = (estadoSistema.primoDominante % 4) + 3;
+                    estadoSistema.particulasParaProximoCuantum = nuevoCuantum;
+                    
+                    // Crear nuevo átomo basado en el primo dominante
+                    crearNuevoAtomo(estadoSistema.primoDominante);
+                    
+                    estadoSistema.ciclosCompletados = 0;
+                    estadoSistema.progresoReparacion = 0;
+                    estadoSistema.historicoPrimos = [];
+                    
+                    actualizarLogEvento(`¡REPARACIÓN ESTABLE! Nuevo ciclo: ${nuevoCuantum} partículas`);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // CREAR NUEVO ÁTOMO
+        function crearNuevoAtomo(primo) {
+            const contenedor = document.getElementById('electronesContenedor');
+            const radioEsfera = 70;
+            
+            // Determinar propiedades del átomo basado en el primo
+            const masaBase = (primo % 10) / 10 + 0.5;
+            const carga = (primo % 3 === 0) ? -1 : 1;
+            const tipo = (primo % 3) + 1;
+            
+            // Posición inicial cerca del centro
+            const angulo = Math.random() * 2 * Math.PI;
+            const distancia = 10 + (Math.random() * 20);
+            const x = Math.cos(angulo) * distancia;
+            const y = Math.sin(angulo) * distancia;
+            
+            const atomo = document.createElement('div');
+            atomo.className = `electron electron-${tipo}`;
+            atomo.style.left = `calc(50% + ${x}px)`;
+            atomo.style.top = `calc(50% + ${y}px)`;
+            
+            contenedor.appendChild(atomo);
+            
+            estadoSistema.electronesData.push({
+                elemento: atomo,
+                x: x,
+                y: y,
+                masa: masaBase,
+                carga: carga,
+                tipo: tipo,
+                velocidadX: 0,
+                velocidadY: 0,
+                radio: 6 + (masaBase * 3)
+            });
+            
+            estadoSistema.electronesColocados++;
+            estadoSistema.maxElectrones++;
+            
+            // Guardar como último átomo creado
+            estadoSistema.ultimoAtomoCreado = { tipo, masa: masaBase, carga };
+            
+            // Actualizar color del título
+            actualizarColorTitulo(tipo);
+            
+            actualizarPanelReparacion();
+            
+            // Efecto de brillo en todo el sistema
+            activarBrilloSistema();
+            
+            // Actualizar información dinámica
+            actualizarInfoDinamica(`Nuevo átomo: masa ${masaBase.toFixed(2)}, carga ${carga > 0 ? '+' : ''}${carga}`);
+            
+            actualizarLogEvento(`Nuevo átomo creado: masa ${masaBase.toFixed(2)}, carga ${carga > 0 ? '+' : ''}${carga}`);
+        }
+
+        // ACTIVAR BRILLO EN TODO EL SISTEMA
+        function activarBrilloSistema() {
+            if (estadoSistema.brilloActivo) return;
+            
+            estadoSistema.brilloActivo = true;
+            const efectoBrillo = document.getElementById('efectoBrillo');
+            
+            efectoBrillo.animate([
+                { opacity: 0 },
+                { opacity: 0.7 },
+                { opacity: 0 }
+            ], {
+                duration: 1500,
+                easing: 'ease-out'
+            });
+            
+            setTimeout(() => {
+                estadoSistema.brilloActivo = false;
+            }, 1500);
+        }
+
+        function actualizarPaneles() {
+            document.getElementById('cuantumActual').textContent = estadoSistema.cuantumActual;
+            document.getElementById('proximoCuantum').textContent = estadoSistema.particulasParaProximoCuantum;
+            
+            const progreso = (estadoSistema.progresoCuantico / estadoSistema.particulasParaProximoCuantum) * 100;
+            document.getElementById('progresoCuantico').style.width = progreso + '%';
+            
+            document.getElementById('electronesActivos').textContent = 
+                `${estadoSistema.electronesColocados}/${estadoSistema.maxElectrones}`;
+            document.getElementById('metaReparacion').textContent = estadoSistema.metaReparacion || '?';
+            
+            const progresoRep = estadoSistema.metaReparacion ? 
+                (estadoSistema.progresoReparacion / estadoSistema.metaReparacion) * 100 : 0;
+            document.getElementById('progresoReparacion').style.width = progresoRep + '%';
+            
+            document.getElementById('primoDominante').textContent = estadoSistema.primoDominante || '-';
+        }
+
+        function actualizarPanelReparacion() {
+            document.getElementById('electronesActivos').textContent = 
+                `${estadoSistema.electronesColocados}/${estadoSistema.maxElectrones}`;
+        }
+
+        // SISTEMA DE PARTÍCULAS MEJORADO CON MOVIMIENTO FLUIDO
+        class SistemaParticulas {
+            constructor() {
+                this.particulas = new Set();
+                this.rafId = null;
+            }
+            
+            iniciar() {
+                this.animar();
+            }
+            
+            agregarParticula(particula, inicioX, inicioY, primo) {
+                const masaParticula = (primo % 100) / 100 + 0.5;
+                
+                estadoSistema.contadorParticulas++;
+                const esQuintaParticula = (estadoSistema.contadorParticulas % 5 === 0);
+                
+                const datos = {
+                    elemento: particula,
+                    x: inicioX,
+                    y: inicioY,
+                    primo: primo,
+                    masa: masaParticula,
+                    velocidad: 1.5 + (Math.random() * 1),
+                    velocidadOriginal: 0,
+                    estado: 'viajando',
+                    destinoX: estadoSistema.centroX,
+                    destinoY: estadoSistema.centroY,
+                    tiempo: 0,
+                    fractalOffset: Math.random() * 100,
+                    rastro: [],
+                    esQuinta: esQuintaParticula,
+                    energia: 1.0,
+                    titilando: false,
+                    contadorTitileo: 0,
+                    dentroEsfera: false
+                };
+                
+                datos.velocidadOriginal = datos.velocidad;
+                this.particulas.add(datos);
+                return datos;
+            }
+            
+            // MOVIMIENTO FRACTAL CON DEGRADACIÓN
+            calcularPosicionFractal(datos) {
+                const tiempo = datos.tiempo * 0.01;
+                const offset = datos.fractalOffset;
+                
+                // Patrón fractal más complejo
+                const fractalX = Math.sin(tiempo * 2 + offset) * 3 + 
+                                Math.sin(tiempo * 3.7 + offset * 1.3) * 2 +
+                                Math.sin(tiempo * 5.2 + offset * 0.7) * 1;
+                
+                const fractalY = Math.cos(tiempo * 2.3 + offset) * 3 + 
+                                Math.cos(tiempo * 4.1 + offset * 1.1) * 2 +
+                                Math.cos(tiempo * 5.8 + offset * 0.9) * 1;
+                
+                return { x: fractalX, y: fractalY };
+            }
+            
+            // CREAR RASTRO
+            crearRastro(x, y) {
+                let rastro = rastroPool.length > 0 ? rastroPool.pop() : document.createElement('div');
+                rastro.className = 'rastro-particula';
+                rastro.style.left = x + 'px';
+                rastro.style.top = y + 'px';
+                
+                document.getElementById('relojNucleo').appendChild(rastro);
+                
+                // Desvanecer el rastro
+                setTimeout(() => {
+                    if (rastro.parentNode) {
+                        rastro.parentNode.removeChild(rastro);
+                        rastroPool.push(rastro);
+                    }
+                }, 800);
+            }
+            
+            animar() {
+                this.particulas.forEach(datos => {
+                    if (datos.estado === 'viajando') {
+                        datos.tiempo++;
+                        
+                        const dx = datos.destinoX - datos.x;
+                        const dy = datos.destinoY - datos.y;
+                        const distancia = Math.sqrt(dx * dx + dy * dy);
+                        
+                        // Verificar si está dentro de la esfera
+                        const distanciaCentro = Math.sqrt(
+                            Math.pow(datos.x - estadoSistema.centroX, 2) + 
+                            Math.pow(datos.y - estadoSistema.centroY, 2)
+                        );
+                        
+                        const dentroEsfera = distanciaCentro < 100; // Radio de la esfera
+                        
+                        if (dentroEsfera && !datos.dentroEsfera) {
+                            datos.dentroEsfera = true;
+                            // Frenar partícula cuando entra en la esfera (medio fluido)
+                            datos.velocidad *= 0.3;
+                        }
+                        
+                        // Crear rastro periódicamente
+                        if (datos.tiempo % 5 === 0) {
+                            this.crearRastro(datos.x, datos.y);
+                        }
+                        
+                        if (distancia > 2) {
+                            // Degradación de energía (excepto para la quinta partícula)
+                            if (!datos.esQuinta) {
+                                datos.energia -= 0.005;
+                                datos.velocidad = datos.velocidadOriginal * datos.energia;
+                                
+                                // Comenzar a titilar cuando la energía es baja
+                                if (datos.energia < 0.3 && !datos.titilando) {
+                                    datos.titilando = true;
+                                }
+                                
+                                // Titileo cuando está por disiparse
+                                if (datos.titilando) {
+                                    datos.contadorTitileo++;
+                                    const opacidad = 0.3 + 0.7 * Math.sin(datos.contadorTitileo * 0.5);
+                                    datos.elemento.style.opacity = opacidad;
+                                }
+                                
+                                // Disiparse completamente
+                                if (datos.energia <= 0.1) {
+                                    this.disiparParticula(datos);
+                                    return;
+                                }
+                            }
+                            
+                            // Movimiento base hacia el centro
+                            const direccionX = dx / distancia;
+                            const direccionY = dy / distancia;
+                            
+                            // Añadir movimiento fractal
+                            const fractal = this.calcularPosicionFractal(datos);
+                            
+                            datos.x += (direccionX * datos.velocidad) + (fractal.x * 0.1 * datos.energia);
+                            datos.y += (direccionY * datos.velocidad) + (fractal.y * 0.1 * datos.energia);
+                            
+                            datos.elemento.style.left = datos.x + 'px';
+                            datos.elemento.style.top = datos.y + 'px';
+                            
+                            // Rotación fractal
+                            const rotacion = Math.atan2(fractal.y, fractal.x) * (180 / Math.PI);
+                            datos.elemento.style.transform = `rotate(${rotacion}deg)`;
+                        } else {
+                            // La partícula ha llegado al centro
+                            if (datos.esQuinta) {
+                                this.procesarImpactoQuinta(datos);
+                            } else {
+                                this.disiparParticula(datos);
+                            }
+                        }
+                    }
+                });
+                
+                this.rafId = requestAnimationFrame(() => this.animar());
+            }
+            
+            disiparParticula(datos) {
+                // Crear pequeña explosión al disiparse
+                this.crearExplosionIndividual(datos.x, datos.y, datos.masa * 0.3, datos.primo, false);
+                
+                // Aplicar pequeña perturbación a los átomos con movimiento fluido
+                const anguloOnda = Math.atan2(datos.y - estadoSistema.centroY, datos.x - estadoSistema.centroX);
+                aplicarPerturbacionAtomos(datos.x, datos.y, datos.masa * 0.02, 40, anguloOnda);
+                
+                this.removerParticula(datos);
+            }
+            
+            procesarImpactoQuinta(datos) {
+                this.removerParticula(datos);
+                
+                // Crear gran explosión en el centro
+                this.crearExplosionIndividual(datos.x, datos.y, datos.masa * 2, datos.primo, true);
+                
+                // Crear onda gravitacional
+                this.crearOndaGravitacional(datos.x, datos.y, datos.masa, datos.primo);
+                
+                // Aplicar perturbación significativa a los átomos con movimiento fluido
+                const anguloOnda = Math.atan2(datos.y - estadoSistema.centroY, datos.x - estadoSistema.centroX);
+                aplicarPerturbacionAtomos(datos.x, datos.y, datos.masa * 0.08, 80, anguloOnda);
+                
+                const contador = document.getElementById('particulasNucleo');
+                contador.textContent = parseInt(contador.textContent) + 1;
+                
+                estadoSistema.progresoCuantico++;
+                
+                if (estadoSistema.progresoCuantico >= estadoSistema.particulasParaProximoCuantum) {
+                    estadoSistema.cuantumActual++;
+                    estadoSistema.progresoCuantico = 0;
+                    estadoSistema.particulasParaProximoCuantum = 3 + Math.floor(Math.random() * 4);
+                    
+                    estadoSistema.ciclosCompletados++;
+                    estadoSistema.historicoPrimos.push(datos.primo);
+                    estadoSistema.primoDominante = analizarPrimosDominantes();
+                    
+                    if (estadoSistema.primoDominante) {
+                        estadoSistema.progresoReparacion++;
+                    }
+                    
+                    actualizarLogEvento(`Ciclo ${estadoSistema.ciclosCompletados}/4 completado`);
+                }
+                
+                verificarReparacionTejido();
+                actualizarPaneles();
+            }
+            
+            crearOndaGravitacional(x, y, masa, primo) {
+                const reloj = document.getElementById('relojNucleo');
+                let onda = ondaPool.length > 0 ? ondaPool.pop() : document.createElement('div');
+                
+                onda.className = 'onda-gravitacional';
+                onda.style.left = (x - 5) + 'px';
+                onda.style.top = (y - 5) + 'px';
+                onda.style.width = '10px';
+                onda.style.height = '10px';
+                onda.style.opacity = '0.8';
+                
+                reloj.appendChild(onda);
+                
+                // Animación de expansión (sin rebote en el borde)
+                const tamañoFinal = 200 + (masa * 100);
+                const animacion = onda.animate([
+                    { 
+                        width: '10px', 
+                        height: '10px', 
+                        opacity: 0.8,
+                        borderWidth: '1px'
+                    },
+                    { 
+                        width: `${tamañoFinal}px`, 
+                        height: `${tamañoFinal}px`, 
+                        opacity: 0,
+                        borderWidth: '0.5px'
+                    }
+                ], {
+                    duration: 1500,
+                    easing: 'ease-out'
+                });
+                
+                animacion.onfinish = () => {
+                    if (onda.parentNode) {
+                        onda.parentNode.removeChild(onda);
+                        ondaPool.push(onda);
+                    }
+                };
+            }
+            
+            crearExplosionIndividual(x, y, masa, primo, esGrande = false) {
+                const reloj = document.getElementById('relojNucleo');
+                let explosion = explosionPool.length > 0 ? explosionPool.pop() : document.createElement('div');
+                
+                // Determinar tipo de explosión basado en el primo
+                const tipoExplosion = (primo % 3) + 1;
+                explosion.className = `explosion explosion-${tipoExplosion}`;
+                
+                // Tamaño basado en la masa y si es grande
+                const tamañoBase = esGrande ? 15 + (masa * 25) : 8 + (masa * 12);
+                explosion.style.width = `${tamañoBase}px`;
+                explosion.style.height = `${tamañoBase}px`;
+                explosion.style.left = `${x - tamañoBase/2}px`;
+                explosion.style.top = `${y - tamañoBase/2}px`;
+                
+                reloj.appendChild(explosion);
+                
+                // Animación de la explosión
+                const animacion = explosion.animate([
+                    { transform: 'scale(0.5)', opacity: 0 },
+                    { transform: 'scale(1.2)', opacity: 0.8 },
+                    { transform: 'scale(2.5)', opacity: 0 }
+                ], {
+                    duration: esGrande ? 1000 : 600,
+                    easing: 'ease-out'
+                });
+                
+                animacion.onfinish = () => {
+                    if (explosion.parentNode) {
+                        explosion.parentNode.removeChild(explosion);
+                        explosionPool.push(explosion);
+                    }
+                };
+            }
+            
+            removerParticula(datos) {
+                this.particulas.delete(datos);
+                if (datos.elemento.parentNode) {
+                    particulaPool.push(datos.elemento);
+                    datos.elemento.remove();
+                }
+            }
+        }
+
+        // INICIAR SISTEMA DE EXPLOSIONES
+        function iniciarSistemaExplosiones() {
+            // El sistema ya está integrado en la clase SistemaParticulas
+        }
+
+        const sistemaParticulas = new SistemaParticulas();
+
+        // CREAR TÚNELES Y PARTÍCULAS
+        function crearTunelEmisor(primo, porcentaje, conParticulas) {
+            const reloj = document.getElementById('relojNucleo');
+            const width = reloj.offsetWidth;
+            const height = reloj.offsetHeight;
+            
+            const angulo = Math.random() * 2 * Math.PI;
+            const radio = Math.min(width, height) * 0.35;
+            const x = width / 2 + Math.cos(angulo) * radio;
+            const y = 140 + Math.sin(angulo) * radio;
+            
+            const tunel = document.createElement('div');
+            tunel.className = `tunel-emisor ${conParticulas ? 'tunel-nucleo' : 'tunel-sin-particulas'}`;
+            tunel.style.left = (x - 5) + 'px';
+            tunel.style.top = (y - 5) + 'px';
+            
+            reloj.appendChild(tunel);
+            
+            const animacion = tunel.animate([
+                { opacity: 0, transform: 'scale(0.5)' },
+                { opacity: 1, transform: 'scale(1.2)' },
+                { opacity: 0, transform: 'scale(0.3)' }
+            ], {
+                duration: 1800,
+                easing: 'ease-in-out'
+            });
+            
+            if (conParticulas) {
+                animacion.onfinish = () => {
+                    crearParticulasDesdeTunel(x, y, primo, porcentaje);
+                    tunel.remove();
+                };
+            } else {
+                animacion.onfinish = () => tunel.remove();
+            }
+        }
+
+        function crearParticulasDesdeTunel(x, y, primo, porcentaje) {
+            const numParticulas = calcularNumeroParticulas(primo, porcentaje);
+            
+            if (numParticulas === 0) {
+                actualizarLogEvento('Túnel sin emisión');
+                return;
+            }
+            
+            for (let i = 0; i < numParticulas; i++) {
+                setTimeout(() => {
+                    let particula = particulaPool.length > 0 ? particulaPool.pop() : document.createElement('div');
+                    particula.className = 'particula-fluido';
+                    particula.style.opacity = '0.8';
+                    particula.style.left = x + 'px';
+                    particula.style.top = y + 'px';
+                    
+                    document.getElementById('relojNucleo').appendChild(particula);
+                    sistemaParticulas.agregarParticula(particula, x, y, primo);
+                }, i * 300);
+            }
+            
+            actualizarLogEvento(`${numParticulas} partículas emitidas`);
+        }
+
+        function calcularNumeroParticulas(primo, porcentaje) {
+            const base = (primo * Date.now()) % 4;
+            const extra = (porcentaje * 0.1) % 2;
+            let num = Math.floor((base + extra) / 1.5);
+            
+            if (Math.random() < 0.25) num = 0;
+            if (Math.random() < 0.15) num += 1;
+            
+            return Math.max(0, Math.min(3, num));
+        }
+
+        // ACTUALIZAR INFORMACIÓN DINÁMICA CON TRANSICIÓN
+        function actualizarInfoDinamica(mensaje) {
+            if (estadoSistema.infoDinamica.transicionActiva) return;
+            
+            estadoSistema.infoDinamica.transicionActiva = true;
+            const pie = document.getElementById('pieMinimalista');
+            
+            // Guardar el mensaje anterior
+            const mensajeAnterior = pie.textContent;
+            const colorAnterior = estadoSistema.infoDinamica.color;
+            
+            // Generar nuevo color
+            const colores = ['#8a2be2', '#c77dff', '#e0aaff', '#ff4dff', '#00ff88'];
+            const nuevoColor = colores[Math.floor(Math.random() * colores.length)];
+            
+            // Transición de salida
+            pie.animate([
+                { opacity: 1 },
+                { opacity: 0 }
+            ], {
+                duration: 500,
+                easing: 'ease-out'
+            }).onfinish = () => {
+                // Cambiar contenido
+                pie.textContent = mensaje;
+                pie.style.color = nuevoColor;
+                
+                // Actualizar estado
+                estadoSistema.infoDinamica.mensaje = mensaje;
+                estadoSistema.infoDinamica.color = nuevoColor;
+                
+                // Transición de entrada
+                pie.animate([
+                    { opacity: 0 },
+                    { opacity: 0.5 }
+                ], {
+                    duration: 500,
+                    easing: 'ease-in'
+                }).onfinish = () => {
+                    estadoSistema.infoDinamica.transicionActiva = false;
+                    
+                    // Programar regreso al mensaje original después de 5 segundos
+                    setTimeout(() => {
+                        if (!estadoSistema.infoDinamica.transicionActiva && 
+                            estadoSistema.infoDinamica.mensaje !== "TRAILER - Busca palomitas") {
+                            actualizarInfoDinamica("TRAILER - Busca palomitas");
+                        }
+                    }, 5000);
+                };
+            };
+        }
+
+        function actualizarLogEvento(mensaje) {
+            document.getElementById('logEvento').textContent = mensaje;
+        }
+
+        function actualizarTiempo() {
+            const ahora = new Date();
+            document.getElementById('infoTiempo').textContent = ahora.toLocaleTimeString();
+        }
+
+        // INICIALIZACIÓN
+        document.addEventListener('DOMContentLoaded', function() {
+            inicializarDeteccionVisualizacion();
+            inicializarTresCuerpos();
+            
+            estadoSistema.metaReparacion = 3;
+            
+            actualizarTiempo();
+            setInterval(actualizarTiempo, 1000);
+            
+            actualizarPaneles();
+        });
+    </script>
+</body>
+</html>
