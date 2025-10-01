@@ -3,7 +3,7 @@
 ## 🏗️ **ARQUITECTURA FUNDAMENTAL**
 
 ### **BASE MATEMÁTICA: GRUPO MONSTRUO PROYECTADO**
-```python
+```python  
 estructura_fundamental = {
     'grupo_base': "M (Grupo Monstruo - dim 196883)",
     'proyeccion': "M → subgrupos finitos aplicables",
